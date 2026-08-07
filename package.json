@@ -29,6 +29,7 @@
     "@anthropic-ai/sdk": "^0.115.0",
     "@prisma/client": "^6.16.2",
     "next": "^15.5.4",
+    "nodemailer": "^9.0.5",
     "prisma": "^6.16.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
@@ -40,6 +41,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.13",
     "@types/node": "^22.15.3",
+    "@types/nodemailer": "^8.0.1",
     "@types/react": "^19.1.9",
     "@types/react-dom": "^19.1.7",
     "tailwindcss": "^4.1.13",

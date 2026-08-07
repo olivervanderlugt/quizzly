@@ -32,6 +32,7 @@ async function main() {
   const { env } = await import("@/lib/env");
   const { db } = await import("@/lib/db");
   const { attachRealtime } = await import("./realtime/gameServer");
+  const { startRetentionJob } = await import("./retention");
 
   const dev = env.NODE_ENV !== "production";
 
@@ -51,12 +52,33 @@ async function main() {
 
   const io = attachRealtime(server);
 
+  if (env.DATA_RETENTION_DAYS) {
+    startRetentionJob(db, env.DATA_RETENTION_DAYS);
+  }
+
   server.listen(env.PORT, () => {
     console.log(`\n  Quizzly ready on ${env.APP_ORIGIN}`);
     console.log(`  Mode: ${dev ? "development" : "production"}`);
     console.log(
-      `  AI generation: ${env.ANTHROPIC_API_KEY ? `enabled (${env.AI_MODEL})` : "not configured — set ANTHROPIC_API_KEY to switch it on"}\n`,
+      `  AI generation: ${env.ANTHROPIC_API_KEY ? `enabled (${env.AI_MODEL})` : "not configured — set ANTHROPIC_API_KEY to switch it on"}`,
     );
+    console.log(
+      `  Email: ${env.SMTP_HOST && env.EMAIL_FROM ? `enabled via ${env.SMTP_HOST} — password reset is offered` : "not configured — password reset is switched off; set SMTP_HOST/EMAIL_FROM to enable"}`,
+    );
+    console.log(
+      `  Retention: ${env.DATA_RETENTION_DAYS ? `games deleted after ${env.DATA_RETENTION_DAYS} days` : "keep everything — set DATA_RETENTION_DAYS to sweep old games"}\n`,
+    );
+
+    if (env.REDIS_URL) {
+      // The env surface has promised this since day one, but nothing consumes
+      // it yet — better one loud line at boot than silently broken games the
+      // day someone adds a second instance believing Redis has them covered.
+      console.warn(
+        "  WARNING: REDIS_URL is set, but multi-instance support is not implemented — " +
+          "game state and rate limits are in-memory. Run exactly one instance. " +
+          "See docs/DEPLOYMENT.md.\n",
+      );
+    }
   });
 
   // ── Graceful shutdown ──

@@ -10,7 +10,14 @@ import {
   destroySession,
   registerUser,
 } from "@/lib/auth";
+import { env, emailConfigured } from "@/lib/env";
+import { sendPasswordResetEmail } from "@/lib/email";
+import {
+  createPasswordReset,
+  consumePasswordReset,
+} from "@/lib/password-reset";
 import { consume, reset, RULES } from "@/lib/rate-limit";
+import { passwordSchema } from "@/lib/password-policy";
 
 /**
  * Auth server actions.
@@ -24,14 +31,10 @@ import { consume, reset, RULES } from "@/lib/rate-limit";
 export interface FormState {
   error?: string;
   fieldErrors?: Record<string, string>;
+  /** Set on success for forms that stay on the page instead of redirecting. */
+  message?: string;
 }
 
-const passwordSchema = z
-  .string()
-  // NIST guidance: length is what matters. Composition rules ("one symbol!")
-  // mostly push people toward `Password1!`, so we ask for length instead.
-  .min(10, "Use at least 10 characters — length matters more than symbols.")
-  .max(200, "That password is too long.");
 
 const signupSchema = z.object({
   email: z.string().trim().toLowerCase().email("Enter a valid email address."),
@@ -41,6 +44,13 @@ const signupSchema = z.object({
     .trim()
     .min(1, "Tell us what to call you.")
     .max(40, "That name is too long."),
+  // The age gate docs/LEGAL.md requires before opening signup to strangers.
+  // A checkbox posts "on"; we store nothing — the assertion is the point.
+  ageConfirm: z.literal("on", {
+    errorMap: () => ({
+      message: "Confirm you're old enough to create an account.",
+    }),
+  }),
 });
 
 const loginSchema = z.object({
@@ -71,6 +81,7 @@ export async function signupAction(
     email: formData.get("email"),
     password: formData.get("password"),
     displayName: formData.get("displayName"),
+    ageConfirm: formData.get("ageConfirm"),
   });
 
   if (!parsed.success) {
@@ -148,4 +159,100 @@ export async function loginAction(
 export async function logoutAction(): Promise<void> {
   await destroySession();
   redirect("/");
+}
+
+// ─────────────────────────────── Password reset ──────────────────────────────
+
+const requestResetSchema = z.object({
+  email: z.string().trim().toLowerCase().email("Enter a valid email address."),
+});
+
+/**
+ * Ask for a reset link.
+ *
+ * The response is identical whether or not an account exists — and the token
+ * creation and email send happen after the response, fire-and-forget, so not
+ * even response latency distinguishes the two. The email is the only channel
+ * that ever confirms an account's existence, and it goes to the account owner.
+ */
+export async function requestPasswordResetAction(
+  _prev: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  const parsed = requestResetSchema.safeParse({ email: formData.get("email") });
+  if (!parsed.success) {
+    return { error: "Enter a valid email address." };
+  }
+
+  const key = await clientKey();
+  const ipLimit = consume(`reset:ip:${key}`, RULES.passwordReset);
+  const emailLimit = consume(
+    `reset:email:${parsed.data.email}`,
+    RULES.passwordReset,
+  );
+  if (!ipLimit.allowed || !emailLimit.allowed) {
+    return { error: "Too many reset requests. Try again in a while." };
+  }
+
+  if (emailConfigured) {
+    const email = parsed.data.email;
+    void (async () => {
+      const issued = await createPasswordReset(email);
+      if (!issued) return;
+      const url = `${env.APP_ORIGIN}/reset-password?token=${encodeURIComponent(issued.token)}`;
+      await sendPasswordResetEmail(email, url);
+    })().catch((err) => {
+      // Log-and-swallow is deliberate: surfacing a send failure to the form
+      // would turn the SMTP relay into an account-existence oracle.
+      console.error("[auth] password reset issue failed", err);
+    });
+  }
+
+  return {
+    message:
+      "If an account exists under that address, a reset link is on its way. " +
+      "It expires in 30 minutes.",
+  };
+}
+
+const resetSchema = z.object({
+  token: z.string().min(1),
+  password: passwordSchema,
+});
+
+export async function resetPasswordAction(
+  _prev: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  const parsed = resetSchema.safeParse({
+    token: formData.get("token"),
+    password: formData.get("password"),
+  });
+  if (!parsed.success) {
+    const passwordIssue = parsed.error.issues.find(
+      (i) => i.path[0] === "password",
+    );
+    return passwordIssue
+      ? { fieldErrors: { password: passwordIssue.message } }
+      : { error: "That reset link is not valid." };
+  }
+
+  // Redeeming is cheap for the server but each attempt burns nothing for an
+  // attacker without a valid token (256 bits — unguessable), so a modest IP
+  // limit is enough to keep the endpoint from being used as a hash-cracking
+  // treadmill via the scrypt call.
+  const key = await clientKey();
+  if (!consume(`reset:redeem:${key}`, RULES.passwordReset).allowed) {
+    return { error: "Too many attempts. Try again in a while." };
+  }
+
+  const result = await consumePasswordReset(parsed.data.token, parsed.data.password);
+  if (!result.ok) {
+    return {
+      error:
+        "That reset link has expired or was already used. Request a new one.",
+    };
+  }
+
+  redirect("/login?reset=done");
 }

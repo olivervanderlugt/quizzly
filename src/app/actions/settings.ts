@@ -4,8 +4,17 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { db } from "@/lib/db";
-import { destroyAllSessions, requireUser } from "@/lib/auth";
-import { encryptSecret } from "@/lib/crypto";
+import {
+  createSession,
+  destroyAllSessions,
+  requireUser,
+} from "@/lib/auth";
+import {
+  encryptSecret,
+  hashPassword,
+  verifyPassword,
+} from "@/lib/crypto";
+import { passwordSchema } from "@/lib/password-policy";
 import type { ActionState } from "./quiz";
 
 /**
@@ -44,6 +53,51 @@ export async function saveAiKeyAction(
 
   revalidatePath("/settings");
   return { ok: true, message: "Key saved and encrypted." };
+}
+
+/**
+ * Password change.
+ *
+ * Requires the current password even though the caller has a session — a
+ * borrowed laptop must not be enough to lock the owner out of their own
+ * account. On success every session dies (`destroyAllSessions` finally has the
+ * caller its doc comment always promised) and this device gets a fresh one, so
+ * the user who just proved they hold the password stays signed in while anyone
+ * else is out.
+ */
+export async function changePasswordAction(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const user = await requireUser();
+
+  const current = String(formData.get("currentPassword") ?? "");
+  const parsed = passwordSchema.safeParse(formData.get("newPassword"));
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Invalid password." };
+  }
+
+  const record = await db.user.findUnique({
+    where: { id: user.id },
+    select: { passwordHash: true },
+  });
+  if (!record || !(await verifyPassword(current, record.passwordHash))) {
+    return { error: "Your current password didn't match." };
+  }
+
+  await db.user.update({
+    where: { id: user.id },
+    data: { passwordHash: await hashPassword(parsed.data) },
+  });
+
+  await destroyAllSessions(user.id);
+  await createSession(user.id);
+
+  revalidatePath("/settings");
+  return {
+    ok: true,
+    message: "Password changed. Every other device has been signed out.",
+  };
 }
 
 /**
