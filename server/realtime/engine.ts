@@ -11,6 +11,7 @@ import {
   type PlayerResponse,
 } from "@/lib/question-schema";
 import { scoreAnswer, rank, type QuizSettings } from "@/lib/scoring";
+import { sanitizeNickname } from "@/lib/nickname";
 import type { Presentation, Theme } from "@/lib/theme";
 import type {
   AnswerDistribution,
@@ -182,8 +183,9 @@ export class GameRoom {
       return { ok: false, error: "This game is full." };
     }
 
-    const clean = nickname.trim().slice(0, 20);
-    if (clean.length < 1) return { ok: false, error: "Pick a nickname." };
+    const screened = sanitizeNickname(nickname);
+    if (!screened.ok) return { ok: false, error: screened.error };
+    const clean = screened.nickname;
 
     // Nicknames must be unique within a game, so the leaderboard is readable
     // and the host can tell players apart when kicking someone.

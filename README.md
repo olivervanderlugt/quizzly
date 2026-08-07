@@ -34,6 +34,11 @@ questions can't come back malformed — and every one is then run through the sa
 validators a hand-written question faces. Optional: the app is fully functional
 with no AI key configured.
 
+**Public quizzes.** Flip a quiz to public and it appears on the Discover page,
+where anyone with an account can host it as-is or save a copy to make their
+own — nobody has to write a quiz from scratch every time. Only solo quizzes can
+go public; blind group quizzes stay private by construction.
+
 **Built to be played on real phones.** Reconnects without losing your score,
 44px touch targets, no drag-and-drop (it doesn't work on touch and is
 inaccessible), typo-forgiving text answers, and a countdown that corrects for
@@ -43,13 +48,8 @@ device clock skew.
 
 ## Quick start
 
-> **Note:** this repository currently hosts a second, unrelated project under
-> `percentile/`. Everything Quizzly owns lives in `quizzly/` and the two share no
-> files, ports or CI. To pull Quizzly out into its own repository, see
-> [`docs/MOVING-TO-ITS-OWN-REPO.md`](docs/MOVING-TO-ITS-OWN-REPO.md).
-
 ```bash
-git clone <your-repo-url> && cd <repo>/quizzly   # already standalone? just cd in
+git clone https://github.com/olivervanderlugt/quizzly.git && cd quizzly
 cp .env.example .env
 
 # Generate the two required secrets
