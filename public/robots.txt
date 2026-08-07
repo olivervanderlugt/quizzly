@@ -1,2 +1,16 @@
+# Public, indexable surfaces: the landing page, Discover, and the legal pages.
+# Everything a crawler could reach beyond those is either behind a login,
+# meaningful only mid-game, or an API — so it is disallowed by name rather than
+# blanket-blocking the site.
 User-agent: *
-Disallow: /
+Disallow: /api/
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /dashboard
+Disallow: /settings
+Disallow: /quiz
+Disallow: /collab
+Disallow: /host
+Disallow: /play

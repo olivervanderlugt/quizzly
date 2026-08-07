@@ -40,12 +40,23 @@ services:
       PORT: 3000
       APP_ORIGIN: ${APP_ORIGIN:-http://localhost:3000}
       DATABASE_URL: postgresql://${POSTGRES_USER:-quizzly}:${POSTGRES_PASSWORD:-quizzly}@db:5432/${POSTGRES_DB:-quizzly}?schema=public
-      SESSION_SECRET: ${SESSION_SECRET:?set SESSION_SECRET in .env — generate with: openssl rand -base64 32}
-      ENCRYPTION_KEY: ${ENCRYPTION_KEY:?set ENCRYPTION_KEY in .env — generate with: openssl rand -base64 32}
+      # Quoted because the message contains ": " — recent Compose (go-yaml)
+      # rejects that unquoted, and "boots everywhere" beats a prettier error.
+      SESSION_SECRET: "${SESSION_SECRET:?set SESSION_SECRET in .env — generate with `openssl rand -base64 32`}"
+      ENCRYPTION_KEY: "${ENCRYPTION_KEY:?set ENCRYPTION_KEY in .env — generate with `openssl rand -base64 32`}"
       # Optional — leave unset and the app runs fine without AI generation.
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       AI_MODEL: ${AI_MODEL:-claude-opus-5}
       AI_RATE_LIMIT_PER_HOUR: ${AI_RATE_LIMIT_PER_HOUR:-20}
+      # Optional — leave unset and password reset simply isn't offered.
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      EMAIL_FROM: ${EMAIL_FROM:-}
+      # Optional — games older than this many days are deleted daily.
+      DATA_RETENTION_DAYS: ${DATA_RETENTION_DAYS:-}
       MAX_PLAYERS_PER_GAME: ${MAX_PLAYERS_PER_GAME:-500}
       MAX_QUESTIONS_PER_QUIZ: ${MAX_QUESTIONS_PER_QUIZ:-100}
     ports:

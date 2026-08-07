@@ -176,4 +176,6 @@ every switch you still need to handle.
 
 The realtime layer is verified end-to-end by driving real WebSocket connections
 against a running server (host attach, join, answer, score, persist) rather than
-by mocking Socket.IO, which would mostly test the mock.
+by mocking Socket.IO, which would mostly test the mock. That suite is
+`server/realtime/game.e2e.test.ts`, run with `npm run test:e2e` against a real
+Postgres — CI provides one as a service container.

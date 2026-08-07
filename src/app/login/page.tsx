@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { getCurrentUser } from "@/lib/auth";
+import { emailConfigured } from "@/lib/env";
 import { AuthForm } from "@/components/AuthForm";
 
 export const metadata = { title: "Sign in" };
@@ -9,7 +10,7 @@ export const metadata = { title: "Sign in" };
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string }>;
+  searchParams: Promise<{ next?: string; reset?: string }>;
 }) {
   if (await getCurrentUser()) redirect("/dashboard");
 
@@ -37,7 +38,28 @@ export default async function LoginPage({
           <p className="mt-1 text-sm text-ink-400">
             Sign in to build and host quizzes.
           </p>
+
+          {params.reset === "done" ? (
+            <p
+              role="status"
+              className="mt-4 rounded-lg border border-emerald-900 bg-emerald-950/40 px-3 py-2 text-sm text-emerald-300"
+            >
+              Password updated. Sign in with the new one.
+            </p>
+          ) : null}
+
           <AuthForm mode="login" next={next} />
+
+          {emailConfigured ? (
+            <p className="mt-4 text-center text-sm">
+              <Link
+                href="/forgot-password"
+                className="font-medium text-ink-400 hover:text-ink-200 hover:underline"
+              >
+                Forgot your password?
+              </Link>
+            </p>
+          ) : null}
         </div>
 
         <p className="mt-5 text-center text-sm text-ink-400">

@@ -115,6 +115,8 @@ essentials:
 | `ENCRYPTION_KEY` | yes | `openssl rand -base64 32`. Encrypts stored user API keys |
 | `ANTHROPIC_API_KEY` | no | Switches on AI drafting. Everything else works without it |
 | `AI_MODEL` | no | Defaults to `claude-opus-5` |
+| `SMTP_HOST` + `EMAIL_FROM` | no | Switch on password reset, together. Any SMTP provider |
+| `DATA_RETENTION_DAYS` | no | Daily sweep of games older than N days. Unset = keep everything |
 
 The app validates all of this at boot and **refuses to start** if something is
 missing or still set to a placeholder. A container that won't start is a much
@@ -136,6 +138,7 @@ npm run dev          # dev server with hot reload
 npm run build        # production build
 npm start            # run the production build
 npm test             # unit tests (scoring, grading, anti-cheat boundary)
+npm run test:e2e     # integration tests: real sockets + real Postgres
 npm run typecheck    # tsc --noEmit
 npm run db:migrate   # create/apply a migration in development
 npm run db:deploy    # apply committed migrations (production)

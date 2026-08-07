@@ -37,6 +37,20 @@ symptom being that pages load fine but no game ever starts.
 The app validates all of this at boot and refuses to start if anything is
 missing, still a placeholder, or if production is configured over plain HTTP.
 
+Optional, each switching on one feature (leave unset and the app runs without
+it — full annotated list in `.env.example`):
+
+```
+ANTHROPIC_API_KEY=...        # AI question drafting
+SMTP_HOST=... EMAIL_FROM=... # password reset (any SMTP provider; plus
+                             # SMTP_PORT/SMTP_USER/SMTP_PASS/SMTP_SECURE)
+DATA_RETENTION_DAYS=90       # daily sweep of games older than N days
+```
+
+`SMTP_HOST` and `EMAIL_FROM` must be set together — boot refuses half a config.
+The boot log states per feature whether it is on and, if not, which variable
+switches it on.
+
 ---
 
 ## Railway
@@ -77,9 +91,11 @@ fly secrets set \
 fly deploy
 ```
 
-In `fly.toml`, keep `internal_port = 3000` and set
-`auto_stop_machines = false` — a machine that suspends mid-game drops every
-player's connection.
+A ready `fly.toml` is committed at the repository root — `fly launch
+--copy-config --no-deploy` keeps it. It already has `internal_port = 3000`,
+`auto_stop_machines = false` (a machine that suspends mid-game drops every
+player's connection), the `/api/health` check, and migrations as the release
+command.
 
 ## Plain VPS with Docker Compose
 
@@ -153,6 +169,10 @@ scaling out requires real changes.
 ---
 
 ## Running more than one instance
+
+**Not supported today.** `REDIS_URL` is reserved for this and nothing consumes
+it yet — the server warns at boot if it is set. Run exactly one instance and
+scale it up, not out. What follows is the map for whoever builds it.
 
 Two things are process-local and will break if you naively add instances behind
 a load balancer:

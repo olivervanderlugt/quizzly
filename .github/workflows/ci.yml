@@ -22,6 +22,23 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
+    # The integration tests (`test:e2e`) drive real sockets against a real
+    # Postgres, so the job carries one as a service container.
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: quizzly
+          POSTGRES_PASSWORD: quizzly
+          POSTGRES_DB: quizzly
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U quizzly"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
     steps:
       - uses: actions/checkout@v4
 
@@ -38,6 +55,16 @@ jobs:
       - name: Unit tests
         run: npm test
 
+      - name: Apply migrations
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: postgresql://quizzly:quizzly@localhost:5432/quizzly?schema=public
+
+      - name: Integration tests
+        run: npm run test:e2e
+        env:
+          DATABASE_URL: postgresql://quizzly:quizzly@localhost:5432/quizzly?schema=public
+
       # `npm run build` is `prisma generate && next build`. Prisma resolves
       # env("DATABASE_URL") while reading the datasource block but never opens a
       # connection, so a placeholder is correct here. Next's build phase is
@@ -48,3 +75,23 @@ jobs:
         run: npm run build
         env:
           DATABASE_URL: postgresql://placeholder:placeholder@localhost:5432/placeholder
+
+  # The Docker image is the deploy artifact; an image that stops building is a
+  # broken deploy waiting to be discovered. Build it (no push) on every run.
+  docker:
+    name: docker image builds
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

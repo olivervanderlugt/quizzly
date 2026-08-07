@@ -6,6 +6,7 @@ import { db } from "@/lib/db";
 import { aiConfigured } from "@/lib/env";
 import { deleteAccountAction } from "@/app/actions/settings";
 import { AiKeyForm } from "@/components/settings/AiKeyForm";
+import { ChangePasswordForm } from "@/components/settings/ChangePasswordForm";
 
 export const metadata = { title: "Settings" };
 
@@ -54,6 +55,30 @@ export default async function SettingsPage({
               </dd>
             </div>
           </dl>
+        </section>
+
+        <section className="app-card p-5">
+          <h2 className="font-semibold text-white">Change password</h2>
+          <p className="mt-1 text-sm leading-relaxed text-ink-400">
+            Changing your password signs you out everywhere else — this device
+            stays signed in.
+          </p>
+          <ChangePasswordForm />
+        </section>
+
+        <section className="app-card p-5">
+          <h2 className="font-semibold text-white">Your data</h2>
+          <p className="mt-1 text-sm leading-relaxed text-ink-400">
+            Download everything Quizzly holds about your account as JSON: your
+            profile, your quizzes and questions, and the games you hosted.
+          </p>
+          <a
+            href="/api/account/export"
+            className="btn btn-ghost mt-3 inline-block"
+            download
+          >
+            Download my data
+          </a>
         </section>
 
         <section className="app-card p-5">

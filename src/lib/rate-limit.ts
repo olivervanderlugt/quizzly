@@ -96,6 +96,8 @@ export const RULES = {
   /** Brute-force protection. Ten minutes off after five bad attempts. */
   login: { limit: 5, windowMs: 15 * 60_000, blockMs: 10 * 60_000 },
   signup: { limit: 3, windowMs: 60 * 60_000 },
+  /** Reset requests send email — limited per IP and per target address. */
+  passwordReset: { limit: 3, windowMs: 60 * 60_000 },
   /** AI generation is the expensive one — this is a spend cap, not just abuse control. */
   aiGenerate: { limit: 20, windowMs: 60 * 60_000 },
   /** Joining games: generous, since a whole classroom joins from one NAT'd IP. */

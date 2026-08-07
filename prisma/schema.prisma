@@ -38,6 +38,7 @@ model User {
   encryptedAiKey String?
 
   sessions     Session[]
+  passwordResetTokens PasswordResetToken[]
   quizzes      Quiz[]
   hostedGames  Game[]
   contributions CollabContributor[]
@@ -49,6 +50,19 @@ model User {
 model Session {
   // Stores a SHA-256 hash of the session token, never the token itself, so a
   // database leak cannot be replayed as a login.
+  id        String   @id
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model PasswordResetToken {
+  // Stores a SHA-256 hash of the emailed token, never the token itself — the
+  // same reasoning as Session: a database leak must not be redeemable.
   id        String   @id
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)

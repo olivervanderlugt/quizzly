@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 
@@ -114,6 +115,28 @@ export function AuthForm({
         ) : null}
       </div>
 
+      {mode === "signup" ? (
+        <div className="mt-4">
+          <label className="flex items-start gap-2.5 text-sm text-ink-300">
+            <input
+              type="checkbox"
+              name="ageConfirm"
+              required
+              className="mt-0.5 accent-brand-400"
+              aria-describedby={state.fieldErrors?.ageConfirm ? "ageConfirm-error" : undefined}
+            />
+            <span>
+              I&apos;m at least 16, or the digital age of consent where I live.
+            </span>
+          </label>
+          {state.fieldErrors?.ageConfirm ? (
+            <p id="ageConfirm-error" className="mt-1.5 text-sm text-red-400">
+              {state.fieldErrors.ageConfirm}
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+
       {state.error ? (
         <p
           role="alert"
@@ -124,6 +147,20 @@ export function AuthForm({
       ) : null}
 
       <SubmitButton label={mode === "login" ? "Sign in" : "Create account"} />
+
+      {mode === "signup" ? (
+        <p className="mt-3 text-center text-xs text-ink-500">
+          By creating an account you agree to the{" "}
+          <Link href="/terms" className="underline hover:text-ink-300">
+            terms
+          </Link>{" "}
+          and the{" "}
+          <Link href="/privacy" className="underline hover:text-ink-300">
+            privacy policy
+          </Link>
+          .
+        </p>
+      ) : null}
     </form>
   );
 }
