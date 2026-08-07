@@ -38,8 +38,33 @@ const schema = z.object({
 
   REDIS_URL: z.string().optional(),
 
+  // Optional: outbound email. Without it the app runs fine — password reset is
+  // simply not offered, the same graceful degradation as AI generation.
+  SMTP_HOST: z.string().optional(),
+  SMTP_PORT: z.coerce.number().int().positive().default(587),
+  SMTP_USER: z.string().optional(),
+  SMTP_PASS: z.string().optional(),
+  // Not `z.coerce.boolean()`, which would turn the string "false" into true.
+  SMTP_SECURE: z.enum(["true", "false"]).default("false"),
+  EMAIL_FROM: z.string().optional(),
+
+  // Optional: delete finished games older than this many days. Unset = keep
+  // forever. See docs/LEGAL.md on retention.
+  DATA_RETENTION_DAYS: z.coerce.number().int().positive().optional(),
+
   MAX_PLAYERS_PER_GAME: z.coerce.number().int().positive().max(10_000).default(500),
   MAX_QUESTIONS_PER_QUIZ: z.coerce.number().int().positive().max(500).default(100),
+}).superRefine((value, ctx) => {
+  // Half-configured email would fail on the first reset request at 2am instead
+  // of at boot — the exact failure mode this file exists to prevent.
+  if (Boolean(value.SMTP_HOST) !== Boolean(value.EMAIL_FROM)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: [value.SMTP_HOST ? "EMAIL_FROM" : "SMTP_HOST"],
+      message:
+        "SMTP_HOST and EMAIL_FROM must be set together — both or neither",
+    });
+  }
 });
 
 /**
@@ -143,5 +168,10 @@ export const env = load();
 
 /** True when AI features should be offered at all. */
 export const aiConfigured = Boolean(env.ANTHROPIC_API_KEY?.trim());
+
+/** True when outbound email works, and therefore password reset is offered. */
+export const emailConfigured = Boolean(
+  env.SMTP_HOST?.trim() && env.EMAIL_FROM?.trim(),
+);
 
 export const isProduction = env.NODE_ENV === "production";
