@@ -19,6 +19,7 @@ export default async function DashboardPage() {
       id: true,
       title: true,
       mode: true,
+      visibility: true,
       updatedAt: true,
       collabCode: true,
       collabStage: true,
@@ -35,6 +36,9 @@ export default async function DashboardPage() {
           </Link>
           <div className="flex items-center gap-3 text-sm">
             <span className="hidden text-ink-400 sm:inline">{user.displayName}</span>
+            <Link href="/discover" className="btn btn-ghost py-1.5 text-sm">
+              Discover
+            </Link>
             <Link href="/settings" className="btn btn-ghost py-1.5 text-sm">
               Settings
             </Link>
@@ -133,6 +137,11 @@ export default async function DashboardPage() {
                       {quiz.mode === "COLLAB" ? (
                         <span className="rounded bg-brand-900 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-300">
                           group · {quiz.collabStage === "COLLECTING" ? "collecting" : "locked"}
+                        </span>
+                      ) : null}
+                      {quiz.visibility === "PUBLIC" ? (
+                        <span className="rounded bg-emerald-900 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-300">
+                          public
                         </span>
                       ) : null}
                     </div>

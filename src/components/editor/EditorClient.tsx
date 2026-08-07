@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 
 import {
   QUESTION_TYPES,
@@ -21,6 +21,11 @@ import { QuestionEditor, type DraftQuestion } from "./QuestionEditor";
 import { ThemeEditor } from "./ThemeEditor";
 import { SettingsEditor } from "./SettingsEditor";
 import { AiPanel } from "./AiPanel";
+import {
+  autosaveLabel,
+  useUnsavedChangesWarning,
+  type AutosaveStatus,
+} from "./useAutosave";
 
 export interface EditorQuestion {
   id: string;
@@ -32,6 +37,8 @@ export interface EditorQuestion {
   explanation: string | null;
 }
 
+export type QuizVisibilityName = "PRIVATE" | "UNLISTED" | "PUBLIC";
+
 type Tab = "questions" | "design" | "settings" | "ai";
 
 const TABS: Array<{ id: Tab; label: string }> = [
@@ -41,12 +48,28 @@ const TABS: Array<{ id: Tab; label: string }> = [
   { id: "ai", label: "AI draft" },
 ];
 
+const AUTOSAVE_DELAY_MS = 1000;
+
+/** The part of a question the save action persists, as a comparable string. */
+function snapshot(q: EditorQuestion): string {
+  return JSON.stringify([
+    q.prompt,
+    q.payload,
+    q.presentation,
+    q.timeLimitSec,
+    q.points,
+    q.explanation,
+  ]);
+}
+
 export function EditorClient({
   quizId,
   title,
   initialQuestions,
   initialTheme,
   initialSettings,
+  initialVisibility,
+  mode,
   ai,
 }: {
   quizId: string;
@@ -55,6 +78,8 @@ export function EditorClient({
   initialQuestions: EditorQuestion[];
   initialTheme: Theme;
   initialSettings: QuizSettings;
+  initialVisibility: QuizVisibilityName;
+  mode: "SOLO" | "COLLAB";
   ai: AiAvailability;
 }) {
   const router = useRouter();
@@ -64,11 +89,130 @@ export function EditorClient({
     initialQuestions[0]?.id ?? null,
   );
   const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
+  const [saveStatus, setSaveStatus] = useState<AutosaveStatus>("saved");
   const [pending, startTransition] = useTransition();
   const [showTypePicker, setShowTypePicker] = useState(false);
 
+  // Autosave bookkeeping. `savedRef` holds the last server-acknowledged
+  // snapshot per question; `questionsRef` lets the debounce timer read current
+  // state without stale closures.
+  const savedRef = useRef<Map<string, string>>(
+    new Map(initialQuestions.map((q) => [q.id, snapshot(q)])),
+  );
+  const questionsRef = useRef(questions);
+  questionsRef.current = questions;
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const inFlightRef = useRef(false);
+
   const selected = questions.find((q) => q.id === selectedId) ?? null;
+
+  // `router.refresh()` (after add/reorder/AI-draft) re-renders the server page
+  // and hands this component fresh props, but React keeps the existing state.
+  // Reconcile: take the server's list and order, except that a question with
+  // edits the server hasn't acknowledged yet keeps its local version.
+  useEffect(() => {
+    setQuestions((prev) =>
+      initialQuestions.map((incoming) => {
+        const local = prev.find((p) => p.id === incoming.id);
+        if (local && snapshot(local) !== savedRef.current.get(incoming.id)) {
+          return local;
+        }
+        savedRef.current.set(incoming.id, snapshot(incoming));
+        return incoming;
+      }),
+    );
+  }, [initialQuestions]);
+
+  const persist = useCallback(
+    async (questionId: string) => {
+      const question = questionsRef.current.find((q) => q.id === questionId);
+      if (!question) return;
+
+      const snap = snapshot(question);
+      if (snap === savedRef.current.get(questionId)) {
+        setSaveStatus("saved");
+        return;
+      }
+
+      // An empty prompt can't pass validation. Don't spam the server (or the
+      // author) about a question they're mid-way through writing; the status
+      // line keeps showing unsaved until there is something to save.
+      if (!question.prompt.trim()) return;
+
+      if (inFlightRef.current) {
+        // A save is already running; try again once it has had time to land.
+        if (timerRef.current) clearTimeout(timerRef.current);
+        timerRef.current = setTimeout(() => void persist(questionId), 400);
+        return;
+      }
+
+      inFlightRef.current = true;
+      setSaveStatus("saving");
+      const result = await saveQuestionAction({
+        questionId: question.id,
+        prompt: question.prompt,
+        payload: question.payload,
+        presentation: question.presentation,
+        timeLimitSec: question.timeLimitSec,
+        points: question.points,
+        explanation: question.explanation,
+      });
+      inFlightRef.current = false;
+
+      if (result.error) {
+        setSaveStatus("error");
+        setError(result.error);
+        return;
+      }
+
+      savedRef.current.set(questionId, snap);
+      setError(null);
+
+      // More edits may have arrived while the request was in flight.
+      const latest = questionsRef.current.find((q) => q.id === questionId);
+      if (latest && snapshot(latest) !== snap) {
+        setSaveStatus("pending");
+        if (timerRef.current) clearTimeout(timerRef.current);
+        timerRef.current = setTimeout(
+          () => void persist(questionId),
+          AUTOSAVE_DELAY_MS,
+        );
+      } else {
+        setSaveStatus("saved");
+      }
+    },
+    [],
+  );
+
+  const scheduleAutosave = useCallback(
+    (questionId: string) => {
+      setSaveStatus("pending");
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(
+        () => void persist(questionId),
+        AUTOSAVE_DELAY_MS,
+      );
+    },
+    [persist],
+  );
+
+  /** Save now — used when leaving a question and by the explicit button. */
+  const flush = useCallback(
+    (questionId: string | null) => {
+      if (!questionId) return;
+      if (timerRef.current) clearTimeout(timerRef.current);
+      void persist(questionId);
+    },
+    [persist],
+  );
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
+
+  useUnsavedChangesWarning(saveStatus === "pending" || saveStatus === "saving");
 
   function updateSelected(next: DraftQuestion) {
     if (!selectedId) return;
@@ -87,32 +231,33 @@ export function EditorClient({
           : q,
       ),
     );
+    scheduleAutosave(selectedId);
   }
 
   function save() {
     if (!selected) return;
     setError(null);
-    setMessage(null);
-
     startTransition(async () => {
-      const result = await saveQuestionAction({
-        questionId: selected.id,
-        prompt: selected.prompt,
-        payload: selected.payload,
-        presentation: selected.presentation,
-        timeLimitSec: selected.timeLimitSec,
-        points: selected.points,
-        explanation: selected.explanation,
-      });
-
-      if (result.error) setError(result.error);
-      else setMessage(result.message ?? "Saved.");
+      // The explicit button also surfaces validation errors autosave keeps
+      // quiet about (an empty prompt), so nobody wonders why nothing saved.
+      if (!selected.prompt.trim()) {
+        setError("Write the question.");
+        return;
+      }
+      await persist(selected.id);
     });
+  }
+
+  function selectQuestion(questionId: string) {
+    flush(selectedId);
+    setSelectedId(questionId);
+    setError(null);
   }
 
   function addQuestion(type: QuestionTypeName) {
     setShowTypePicker(false);
     setError(null);
+    flush(selectedId);
 
     startTransition(async () => {
       const result = await addQuestionAction(quizId, type);
@@ -134,6 +279,7 @@ export function EditorClient({
         setError(result.error);
         return;
       }
+      savedRef.current.delete(questionId);
       setQuestions((prev) => prev.filter((q) => q.id !== questionId));
       if (selectedId === questionId) setSelectedId(null);
       router.refresh();
@@ -150,22 +296,37 @@ export function EditorClient({
   return (
     <div>
       {/* ── Tabs ── */}
-      <div role="tablist" className="mb-6 flex gap-1 border-b border-ink-800">
-        {TABS.map((item) => (
-          <button
-            key={item.id}
-            role="tab"
-            aria-selected={tab === item.id}
-            onClick={() => setTab(item.id)}
-            className={`-mb-px border-b-2 px-4 py-2.5 text-sm font-medium transition-colors ${
-              tab === item.id
-                ? "border-brand-500 text-white"
-                : "border-transparent text-ink-400 hover:text-ink-200"
+      <div className="mb-6 flex items-center border-b border-ink-800">
+        <div role="tablist" className="flex flex-1 gap-1">
+          {TABS.map((item) => (
+            <button
+              key={item.id}
+              role="tab"
+              aria-selected={tab === item.id}
+              onClick={() => {
+                if (tab === "questions") flush(selectedId);
+                setTab(item.id);
+              }}
+              className={`-mb-px border-b-2 px-4 py-2.5 text-sm font-medium transition-colors ${
+                tab === item.id
+                  ? "border-brand-500 text-white"
+                  : "border-transparent text-ink-400 hover:text-ink-200"
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+        {tab === "questions" && questions.length > 0 ? (
+          <span
+            role="status"
+            className={`hidden pb-1 text-xs sm:inline ${
+              saveStatus === "error" ? "text-red-400" : "text-ink-500"
             }`}
           >
-            {item.label}
-          </button>
-        ))}
+            {autosaveLabel(saveStatus)}
+          </span>
+        ) : null}
       </div>
 
       {tab === "questions" ? (
@@ -177,11 +338,7 @@ export function EditorClient({
                 <li key={question.id} className="flex items-stretch gap-1">
                   <button
                     type="button"
-                    onClick={() => {
-                      setSelectedId(question.id);
-                      setMessage(null);
-                      setError(null);
-                    }}
+                    onClick={() => selectQuestion(question.id)}
                     aria-current={selectedId === question.id}
                     className={`app-card min-w-0 flex-1 px-3 py-2.5 text-left ${
                       selectedId === question.id
@@ -279,9 +436,10 @@ export function EditorClient({
                 onChange={updateSelected}
                 onSave={save}
                 onDelete={() => remove(selected.id)}
-                saving={pending}
+                saving={pending || saveStatus === "saving"}
                 error={error}
-                message={message}
+                message={null}
+                saveLabel="Save now"
               />
             ) : (
               <p className="py-16 text-center text-ink-400">
@@ -299,7 +457,12 @@ export function EditorClient({
       ) : null}
 
       {tab === "settings" ? (
-        <SettingsEditor quizId={quizId} initialSettings={initialSettings} />
+        <SettingsEditor
+          quizId={quizId}
+          initialSettings={initialSettings}
+          initialVisibility={initialVisibility}
+          mode={mode}
+        />
       ) : null}
 
       {tab === "ai" ? (

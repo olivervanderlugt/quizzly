@@ -194,6 +194,96 @@ export async function updateSettingsAction(
   return { ok: true, message: "Settings updated." };
 }
 
+const visibilitySchema = z.enum(["PRIVATE", "PUBLIC"]);
+
+export async function updateVisibilityAction(
+  quizId: string,
+  rawVisibility: unknown,
+): Promise<ActionState> {
+  const user = await requireUser();
+  const quiz = await ownedQuiz(quizId, user.id);
+  if (!quiz) return { error: "Quiz not found." };
+
+  const parsed = visibilitySchema.safeParse(rawVisibility);
+  if (!parsed.success) return { error: "That visibility isn't valid." };
+
+  // A group quiz promises contributors nobody can read their questions before
+  // the game. Public means anyone can host it — and the host screen shows
+  // answers — so the two are incompatible by construction, not by policy.
+  if (parsed.data === "PUBLIC" && quiz.mode !== "SOLO") {
+    return { error: "Group quizzes can't be made public." };
+  }
+
+  await db.quiz.update({
+    where: { id: quizId },
+    data: { visibility: parsed.data },
+  });
+
+  revalidatePath(`/quiz/${quizId}/edit`);
+  revalidatePath("/discover");
+  return { ok: true, message: "Sharing updated." };
+}
+
+export async function copyQuizAction(formData: FormData): Promise<void> {
+  const user = await requireUser();
+  const quizId = String(formData.get("quizId") ?? "");
+
+  // Copyable: your own solo quiz, or anyone's public one. COLLAB is excluded
+  // even for the owner — copying would surface unrevealed contributions in the
+  // editor, which is exactly what the mode promises cannot happen.
+  const quiz = await db.quiz.findUnique({
+    where: { id: quizId },
+    select: {
+      ownerId: true,
+      visibility: true,
+      mode: true,
+      title: true,
+      description: true,
+      coverImage: true,
+      theme: true,
+      settings: true,
+      questions: { orderBy: { order: "asc" } },
+    },
+  });
+
+  const allowed =
+    quiz &&
+    quiz.mode === "SOLO" &&
+    (quiz.ownerId === user.id || quiz.visibility === "PUBLIC");
+  if (!quiz || !allowed) redirect("/discover");
+
+  const copy = await db.quiz.create({
+    data: {
+      ownerId: user.id,
+      title: quiz.title.slice(0, 120),
+      description: quiz.description,
+      coverImage: quiz.coverImage,
+      mode: "SOLO",
+      // Copies always start private — publishing someone else's material again
+      // is a decision, not a default.
+      visibility: "PRIVATE",
+      theme: quiz.theme as Prisma.InputJsonValue,
+      settings: quiz.settings as Prisma.InputJsonValue,
+      questions: {
+        create: quiz.questions.map((q, index) => ({
+          order: index,
+          type: q.type,
+          prompt: q.prompt,
+          payload: q.payload as Prisma.InputJsonValue,
+          presentation: q.presentation as Prisma.InputJsonValue,
+          timeLimitSec: q.timeLimitSec,
+          points: q.points,
+          explanation: q.explanation,
+        })),
+      },
+    },
+    select: { id: true },
+  });
+
+  revalidatePath("/dashboard");
+  redirect(`/quiz/${copy.id}/edit`);
+}
+
 // ──────────────────────────────── Questions ─────────────────────────────────
 
 export async function addQuestionAction(
@@ -417,6 +507,7 @@ export async function startGameAction(formData: FormData): Promise<void> {
     select: {
       id: true,
       ownerId: true,
+      visibility: true,
       title: true,
       theme: true,
       settings: true,
@@ -426,8 +517,19 @@ export async function startGameAction(formData: FormData): Promise<void> {
     },
   });
 
-  if (!quiz || quiz.ownerId !== user.id) redirect("/dashboard");
-  if (quiz.questions.length === 0) redirect(`/quiz/${quizId}/edit?error=empty`);
+  // Owners host their own quizzes; anyone signed in can host a public one.
+  // Public is restricted to SOLO — a public COLLAB quiz cannot exist (the
+  // visibility action refuses it), and this guard keeps that true even if a
+  // row were altered some other way.
+  const canHost =
+    quiz &&
+    (quiz.ownerId === user.id ||
+      (quiz.visibility === "PUBLIC" && quiz.mode === "SOLO"));
+  if (!quiz || !canHost) redirect("/dashboard");
+  // Non-owners came from /discover and can't open the edit page.
+  const backWhereYouCameFrom =
+    quiz.ownerId === user.id ? `/quiz/${quizId}/edit` : "/discover";
+  if (quiz.questions.length === 0) redirect(`${backWhereYouCameFrom}?error=empty`);
 
   const settings = quizSettingsSchema.parse(quiz.settings);
   const theme = themeSchema.parse(quiz.theme);
@@ -482,7 +584,7 @@ export async function startGameAction(formData: FormData): Promise<void> {
     }
   }
 
-  if (!game) redirect(`/quiz/${quizId}/edit?error=pin`);
+  if (!game) redirect(`${backWhereYouCameFrom}?error=pin`);
 
   redirect(`/host/${game.id}`);
 }

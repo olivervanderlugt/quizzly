@@ -31,6 +31,7 @@ export default async function EditQuizPage({
       theme: true,
       settings: true,
       mode: true,
+      visibility: true,
       questions: { orderBy: { order: "asc" } },
     },
   });
@@ -86,6 +87,8 @@ export default async function EditQuizPage({
           initialQuestions={questions}
           initialTheme={themeSchema.parse(quiz.theme)}
           initialSettings={quizSettingsSchema.parse(quiz.settings)}
+          initialVisibility={quiz.visibility}
+          mode={quiz.mode}
           ai={ai}
         />
       </main>

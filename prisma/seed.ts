@@ -158,6 +158,8 @@ async function main() {
       title: "Every question type",
       description: "A demo quiz that exercises all ten question formats.",
       mode: "SOLO",
+      // Public so a fresh install's Discover page has something on it.
+      visibility: "PUBLIC",
       theme: BUILT_IN_THEMES.midnight as unknown as Prisma.InputJsonValue,
       settings: DEFAULT_SETTINGS as unknown as Prisma.InputJsonValue,
       questions: {

@@ -1,41 +1,86 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useCallback, useState, useTransition } from "react";
 
 import type { QuizSettings } from "@/lib/scoring";
-import { updateSettingsAction } from "@/app/actions/quiz";
+import { updateSettingsAction, updateVisibilityAction } from "@/app/actions/quiz";
+import type { QuizVisibilityName } from "./EditorClient";
+import { autosaveLabel, useAutosave, useUnsavedChangesWarning } from "./useAutosave";
 
 export function SettingsEditor({
   quizId,
   initialSettings,
+  initialVisibility,
+  mode,
 }: {
   quizId: string;
   initialSettings: QuizSettings;
+  initialVisibility: QuizVisibilityName;
+  mode: "SOLO" | "COLLAB";
 }) {
   const [settings, setSettings] = useState(initialSettings);
-  const [pending, startTransition] = useTransition();
-  const [message, setMessage] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [visibility, setVisibility] = useState(initialVisibility);
+  const [visibilityError, setVisibilityError] = useState<string | null>(null);
+  const [visibilityPending, startVisibility] = useTransition();
 
-  const patch = (partial: Partial<QuizSettings>) => {
+  const saveSettings = useCallback(
+    (value: QuizSettings) => updateSettingsAction(quizId, value),
+    [quizId],
+  );
+  const { status, error } = useAutosave(settings, saveSettings);
+  useUnsavedChangesWarning(status === "pending" || status === "saving");
+
+  const patch = (partial: Partial<QuizSettings>) =>
     setSettings((prev) => ({ ...prev, ...partial }));
-    setMessage(null);
-  };
 
   const patchScoring = (partial: Partial<QuizSettings["scoring"]>) =>
     setSettings((prev) => ({ ...prev, scoring: { ...prev.scoring, ...partial } }));
 
-  function save() {
-    setError(null);
-    startTransition(async () => {
-      const result = await updateSettingsAction(quizId, settings);
-      if (result.error) setError(result.error);
-      else setMessage("Settings saved.");
+  function setPublic(isPublic: boolean) {
+    const next = isPublic ? "PUBLIC" : "PRIVATE";
+    const previous = visibility;
+    setVisibility(next);
+    setVisibilityError(null);
+    startVisibility(async () => {
+      const result = await updateVisibilityAction(quizId, next);
+      if (result.error) {
+        setVisibility(previous);
+        setVisibilityError(result.error);
+      }
     });
   }
 
   return (
     <div className="max-w-2xl space-y-6">
+      <section className="app-card p-5">
+        <h2 className="font-semibold text-white">Sharing</h2>
+
+        {mode === "COLLAB" ? (
+          <p className="mt-3 text-sm text-ink-400">
+            Group quizzes stay private. Contributors were promised nobody could
+            read their questions before the game — a public listing would break
+            that promise.
+          </p>
+        ) : (
+          <div className="mt-4 space-y-3">
+            <Check
+              label="List this quiz publicly"
+              hint="Anyone with an account can find it on the Discover page, host it, or save a copy — which includes seeing the answers."
+              checked={visibility === "PUBLIC"}
+              onChange={setPublic}
+            />
+            {visibilityPending ? (
+              <p className="text-xs text-ink-500">Updating…</p>
+            ) : null}
+            {visibilityError ? (
+              <p role="alert" className="text-sm text-red-400">
+                {visibilityError}
+              </p>
+            ) : null}
+          </div>
+        )}
+      </section>
+
       <section className="app-card p-5">
         <h2 className="font-semibold text-white">Scoring</h2>
 
@@ -185,20 +230,12 @@ export function SettingsEditor({
           {error}
         </p>
       ) : null}
-      {message ? (
-        <p role="status" className="text-sm text-emerald-400">
-          {message}
-        </p>
-      ) : null}
-
-      <button
-        type="button"
-        onClick={save}
-        disabled={pending}
-        className="btn btn-primary"
+      <p
+        role="status"
+        className={`text-xs ${status === "error" ? "text-red-400" : "text-ink-500"}`}
       >
-        {pending ? "Saving…" : "Save settings"}
-      </button>
+        {autosaveLabel(status)}
+      </p>
     </div>
   );
 }

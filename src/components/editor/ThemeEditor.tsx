@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useCallback, useState } from "react";
 
 import {
   ANSWER_SHAPES,
@@ -13,6 +13,7 @@ import {
   type Theme,
 } from "@/lib/theme";
 import { updateThemeAction } from "@/app/actions/quiz";
+import { autosaveLabel, useAutosave, useUnsavedChangesWarning } from "./useAutosave";
 
 /**
  * Theme editor with a live preview.
@@ -29,26 +30,19 @@ export function ThemeEditor({
   initialTheme: Theme;
 }) {
   const [theme, setTheme] = useState<Theme>(initialTheme);
-  const [pending, startTransition] = useTransition();
-  const [message, setMessage] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
-  const patch = (partial: Partial<Theme>) => {
+  const saveTheme = useCallback(
+    (value: Theme) => updateThemeAction(quizId, value),
+    [quizId],
+  );
+  const { status, error } = useAutosave(theme, saveTheme);
+  useUnsavedChangesWarning(status === "pending" || status === "saving");
+
+  const patch = (partial: Partial<Theme>) =>
     setTheme((prev) => ({ ...prev, ...partial }));
-    setMessage(null);
-  };
 
   const patchPalette = (partial: Partial<Theme["palette"]>) =>
     setTheme((prev) => ({ ...prev, palette: { ...prev.palette, ...partial } }));
-
-  function save() {
-    setError(null);
-    startTransition(async () => {
-      const result = await updateThemeAction(quizId, theme);
-      if (result.error) setError(result.error);
-      else setMessage("Theme saved.");
-    });
-  }
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
@@ -61,10 +55,7 @@ export function ThemeEditor({
               <li key={key}>
                 <button
                   type="button"
-                  onClick={() => {
-                    setTheme(preset);
-                    setMessage(null);
-                  }}
+                  onClick={() => setTheme(preset)}
                   className={`w-full overflow-hidden rounded-lg border text-left transition-colors ${
                     theme.name === preset.name
                       ? "border-brand-500"
@@ -225,20 +216,12 @@ export function ThemeEditor({
             {error}
           </p>
         ) : null}
-        {message ? (
-          <p role="status" className="text-sm text-emerald-400">
-            {message}
-          </p>
-        ) : null}
-
-        <button
-          type="button"
-          onClick={save}
-          disabled={pending}
-          className="btn btn-primary"
+        <p
+          role="status"
+          className={`text-xs ${status === "error" ? "text-red-400" : "text-ink-500"}`}
         >
-          {pending ? "Saving…" : "Save theme"}
-        </button>
+          {autosaveLabel(status)}
+        </p>
       </div>
 
       {/* ── Live preview ── */}

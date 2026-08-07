@@ -16,6 +16,9 @@ export default async function LandingPage() {
           Quiz<span className="text-brand-400">zly</span>
         </span>
         <nav className="flex items-center gap-2 text-sm">
+          <Link href="/discover" className="btn btn-ghost">
+            Browse quizzes
+          </Link>
           {user ? (
             <Link href="/dashboard" className="btn btn-primary">
               Go to dashboard
