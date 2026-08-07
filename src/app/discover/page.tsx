@@ -17,15 +17,24 @@ export const metadata = { title: "Discover quizzes" };
 export default async function DiscoverPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; q?: string }>;
 }) {
-  const [user, { error }] = await Promise.all([getCurrentUser(), searchParams]);
+  const [user, { error, q }] = await Promise.all([getCurrentUser(), searchParams]);
+  const query = (q ?? "").trim().slice(0, 100);
 
   const quizzes = await db.quiz.findMany({
     where: {
       visibility: "PUBLIC",
       mode: "SOLO",
       questions: { some: {} },
+      ...(query
+        ? {
+            OR: [
+              { title: { contains: query, mode: "insensitive" as const } },
+              { description: { contains: query, mode: "insensitive" as const } },
+            ],
+          }
+        : {}),
     },
     orderBy: { updatedAt: "desc" },
     take: 60,
@@ -83,11 +92,35 @@ export default async function DiscoverPage({
           </p>
         ) : null}
 
+        <form method="get" action="/discover" className="mt-6 flex max-w-md gap-2">
+          <label className="sr-only" htmlFor="q">
+            Search public quizzes
+          </label>
+          <input
+            id="q"
+            name="q"
+            type="search"
+            defaultValue={query}
+            maxLength={100}
+            placeholder="Search by title or description"
+            className="app-input"
+          />
+          <button type="submit" className="btn btn-ghost">
+            Search
+          </button>
+        </form>
+
         <section className="mt-8">
           {quizzes.length === 0 ? (
             <p className="app-card p-8 text-center text-ink-400">
-              Nothing public yet. Make one of your quizzes public from its
-              editor under Game rules → Sharing, and it will show up here.
+              {query ? (
+                <>Nothing public matches &quot;{query}&quot;.</>
+              ) : (
+                <>
+                  Nothing public yet. Make one of your quizzes public from its
+                  editor under Game rules → Sharing, and it will show up here.
+                </>
+              )}
             </p>
           ) : (
             <ul className="space-y-3">

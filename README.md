@@ -39,6 +39,12 @@ where anyone with an account can host it as-is or save a copy to make their
 own — nobody has to write a quiz from scratch every time. Only solo quizzes can
 go public; blind group quizzes stay private by construction.
 
+**Quizzes are files, if you want them to be.** Export any quiz as a
+`.quizzly.json` file and import it on another account or another Quizzly
+install — theme, settings and questions travel together. An imported file is
+validated exactly like hand-written questions, so a damaged or crafted file is
+refused rather than half-loaded.
+
 **Built to be played on real phones.** Reconnects without losing your score,
 44px touch targets, no drag-and-drop (it doesn't work on touch and is
 inaccessible), typo-forgiving text answers, and a countdown that corrects for

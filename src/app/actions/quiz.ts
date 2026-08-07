@@ -24,6 +24,7 @@ import {
 } from "@/lib/theme";
 import { DEFAULT_SETTINGS, quizSettingsSchema } from "@/lib/scoring";
 import { createCollabQuiz } from "@/lib/collab";
+import { parseQuizTransfer } from "@/lib/quiz-transfer";
 import { generateQuiz, generateRequestSchema, AiError } from "@/lib/ai";
 
 /**
@@ -282,6 +283,47 @@ export async function copyQuizAction(formData: FormData): Promise<void> {
 
   revalidatePath("/dashboard");
   redirect(`/quiz/${copy.id}/edit`);
+}
+
+export async function importQuizAction(
+  raw: unknown,
+): Promise<ActionState & { quizId?: string }> {
+  const user = await requireUser();
+
+  const parsed = parseQuizTransfer(raw, env.MAX_QUESTIONS_PER_QUIZ);
+  if (!parsed.ok) return { error: parsed.error };
+  const data = parsed.data;
+
+  // Imports always land private, whatever the file claims — same reasoning as
+  // copies: publishing is a decision the importer makes afterwards.
+  const quiz = await db.quiz.create({
+    data: {
+      ownerId: user.id,
+      title: data.title,
+      description: data.description ?? null,
+      mode: "SOLO",
+      visibility: "PRIVATE",
+      theme: data.theme as unknown as Prisma.InputJsonValue,
+      settings: data.settings as unknown as Prisma.InputJsonValue,
+      questions: {
+        create: data.questions.map((q, index) => ({
+          order: index,
+          type: q.payload.type,
+          prompt: q.prompt,
+          payload: q.payload as unknown as Prisma.InputJsonValue,
+          presentation: (q.presentation ??
+            DEFAULT_PRESENTATION) as unknown as Prisma.InputJsonValue,
+          timeLimitSec: q.timeLimitSec,
+          points: q.points,
+          explanation: q.explanation ?? null,
+        })),
+      },
+    },
+    select: { id: true },
+  });
+
+  revalidatePath("/dashboard");
+  return { ok: true, quizId: quiz.id, message: "Quiz imported." };
 }
 
 // ──────────────────────────────── Questions ─────────────────────────────────

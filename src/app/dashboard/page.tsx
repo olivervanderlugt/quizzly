@@ -5,6 +5,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { logoutAction } from "@/app/actions/auth";
 import { createQuizAction, deleteQuizAction, startGameAction } from "@/app/actions/quiz";
+import { ImportQuizForm } from "@/components/ImportQuizForm";
 
 export const metadata = { title: "Your quizzes" };
 
@@ -116,6 +117,10 @@ export default async function DashboardPage() {
           </form>
         </div>
 
+        <div className="mt-4">
+          <ImportQuizForm />
+        </div>
+
         {/* ── List ── */}
         <section className="mt-10">
           {quizzes.length === 0 ? (
@@ -164,12 +169,21 @@ export default async function DashboardPage() {
                         Manage
                       </Link>
                     ) : (
-                      <Link
-                        href={`/quiz/${quiz.id}/edit`}
-                        className="btn btn-ghost py-1.5 text-sm"
-                      >
-                        Edit
-                      </Link>
+                      <>
+                        <Link
+                          href={`/quiz/${quiz.id}/edit`}
+                          className="btn btn-ghost py-1.5 text-sm"
+                        >
+                          Edit
+                        </Link>
+                        <a
+                          href={`/api/quiz/${quiz.id}/export`}
+                          download
+                          className="btn btn-ghost py-1.5 text-sm"
+                        >
+                          Export
+                        </a>
+                      </>
                     )}
 
                     <form action={startGameAction}>
