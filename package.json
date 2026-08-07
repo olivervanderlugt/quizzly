@@ -1,6 +1,6 @@
 {
   "name": "quizzly",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "description": "Live quiz platform with rich question types, deep theming, AI generation, and blind group quizzes.",
   "license": "MIT",

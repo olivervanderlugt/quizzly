@@ -59,16 +59,17 @@ Even with minimal player data, you have obligations for **account holders**
 | Right | Status |
 |---|---|
 | Erasure (Art. 17) | **Implemented.** Settings → Delete account. A hard delete; quizzes, games, players and answers cascade |
-| Access (Art. 15) | **Not implemented.** You must handle requests manually, or build an export |
+| Access (Art. 15) | **Implemented.** Settings → Your data downloads the account record, quizzes, hosted-game history and collab contributions as JSON. Unrevealed questions by *other* contributors are excluded — those are their data |
 | Rectification (Art. 16) | Partially — users can edit their own content |
-| Portability (Art. 20) | **Not implemented.** Add a quiz-export endpoint if you need it |
+| Portability (Art. 20) | **Implemented** for quiz content: any solo quiz downloads as a `.quizzly.json` file and imports elsewhere; the Art. 15 export covers the rest |
 
 ### Retention
-The schema has **no automatic retention policy**. Game records live until the
-quiz or account is deleted. Decide a retention period, put it in your privacy
-notice, and enforce it — a scheduled job deleting `Game` rows older than N days
-is the straightforward implementation. Keeping nicknames and answers forever with
-no stated purpose is a compliance problem you will not notice until someone asks.
+Set **`DATA_RETENTION_DAYS`** and the server deletes games older than that many
+days, once a day (`server/retention.ts` — the delete cascades to players and
+answers). Unset, nothing is swept and game records live until the quiz or
+account is deleted. Decide a period, put it in your privacy notice, and set the
+variable to match — keeping nicknames and answers forever with no stated
+purpose is a compliance problem you will not notice until someone asks.
 
 ### Records and assessments
 - **Art. 30 record of processing:** required for most operators. Write one.
@@ -91,9 +92,11 @@ Age Appropriate Design Code already imposes similar duties.
   available. This is the path children actually use.
 - **Creating an account** is where age matters. The GDPR digital-age-of-consent
   default is 16, and member states may lower it to 13 — so the threshold depends
-  on your country. The signup form does **not** currently ask for age or verify
-  it. If your users may include children, you must add an age gate and set the
-  threshold for your jurisdiction.
+  on your country. Signup requires ticking "I'm at least 16, or the digital age
+  of consent where I live" — a self-declaration, stored nowhere, which is the
+  proportionate gate for a service that collects no age data otherwise. If your
+  jurisdiction's threshold differs, adjust the wording in
+  `src/components/AuthForm.tsx` and keep it consistent with `/terms`.
 
 **If you deploy into schools**, expect to need:
 - A Data Processing Agreement with the school (they are usually the controller;
@@ -101,11 +104,11 @@ Age Appropriate Design Code already imposes similar duties.
 - Clear documentation of what you store and for how long.
 - Sensible defaults on anything user-generated.
 
-**Nickname moderation is your problem, not the framework's.** A nickname field
-in a classroom will eventually be used to bully someone. The host can remove a
-player mid-game, and group-quiz submissions can be moderated, but there is **no
-automated profanity filter** — adding a deny-list is a small change and worth
-doing before a school deployment.
+**Nickname moderation is a deny-list, not a moderator.** Joins are screened by
+`src/lib/nickname.ts` — leetspeak folded, slurs blocked as substrings, English
+and Dutch lists — and the host can still remove a player mid-game. No list is
+complete: extend it for every language your players will actually use before a
+school deployment.
 
 ---
 
@@ -181,12 +184,13 @@ When AI drafting is enabled:
 
 - [ ] Fill in every `[BRACKETED]` field in `/privacy` and `/terms`, and delete
       the operator banners.
-- [ ] Decide and document a retention period for game data; implement deletion.
-- [ ] Add an age gate to signup if children may create accounts.
+- [ ] Decide a retention period, document it in `/privacy`, and set
+      `DATA_RETENTION_DAYS` to match.
+- [ ] Check the signup age gate's threshold (16) fits your jurisdiction.
 - [ ] Write your Art. 30 record of processing.
 - [ ] Do a DPIA if deploying into schools or at scale.
 - [ ] Put DPAs in place with your hosting and database providers.
-- [ ] Add nickname moderation if deploying to schools.
+- [ ] Extend the nickname deny-lists for your players' languages.
 - [ ] If commercialising in the US: freedom-to-operate opinion (§4).
 - [ ] Confirm you are not using another company's marks or trade dress.
 

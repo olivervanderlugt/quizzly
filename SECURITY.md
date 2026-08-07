@@ -121,13 +121,16 @@ Be aware of these before deploying at scale.
    never for authorisation, so the worst case is a bypassed login throttle —
    but configure your proxy to set the header authoritatively.
 
-4. **No nickname profanity filter.** A nickname field in a classroom will
-   eventually be misused. Hosts can remove players mid-game, but there is no
-   automated filter. Add a deny-list before any school deployment.
+4. **The nickname filter is a word list, not a moderator.** Joins pass through
+   `src/lib/nickname.ts` — leetspeak folded, slurs blocked as substrings,
+   English and Dutch lists — but no list catches everything, and hosts can
+   still remove players mid-game. Extend the lists for other languages before
+   deploying into them.
 
-5. **No email verification and no password reset.** Accounts are usable
-   immediately and a forgotten password cannot currently be recovered. Both need
-   an email provider, which this deliberately doesn't depend on.
+5. **No email verification; password reset needs SMTP.** Accounts are usable
+   immediately, and their addresses are never verified. Password reset exists
+   but is offered only when `SMTP_HOST`/`EMAIL_FROM` are configured — without
+   them a forgotten password still cannot be recovered.
 
 6. **No account lockout, only rate limiting.** A distributed attacker with many
    IPs is throttled per-email but not locked out.
@@ -173,5 +176,7 @@ Be aware of these before deploying at scale.
 - [ ] Set up automated database backups and test a restore.
 - [ ] Keep dependencies patched (`npm audit`); Socket.IO in particular has had
       DoS-class advisories historically.
-- [ ] Add nickname moderation if children will use it.
-- [ ] Add a retention job for old game data (see `docs/LEGAL.md`).
+- [ ] Extend the nickname deny-lists (`src/lib/nickname.ts`) for every language
+      your players will use.
+- [ ] Set `DATA_RETENTION_DAYS` so old game data is swept (see `docs/LEGAL.md`).
+- [ ] Configure `SMTP_HOST`/`EMAIL_FROM` so password reset is available.

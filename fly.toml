@@ -1,0 +1,54 @@
+# Fly.io config — ready for `fly launch` / `fly deploy`.
+#
+# The two Fly-specific rules from docs/DEPLOYMENT.md are baked in:
+#   • internal_port matches the server's PORT (3000).
+#   • Machines never auto-stop: a machine that suspends mid-game drops every
+#     player's WebSocket. This costs a few dollars a month; the alternative
+#     costs every live game.
+#
+# Before the first deploy:
+#   fly launch --copy-config --no-deploy   # creates the app, keeps this file
+#   fly postgres create && fly postgres attach <db-name>
+#   fly secrets set APP_ORIGIN=https://<app>.fly.dev \
+#     SESSION_SECRET="$(openssl rand -base64 32)" \
+#     ENCRYPTION_KEY="$(openssl rand -base64 32)"
+#
+# The app name below is a placeholder; `fly launch` rewrites it.
+
+app = "quizzly"
+primary_region = "ams"
+
+[build]
+  # Uses the repository Dockerfile as-is.
+
+[deploy]
+  # Migrations run before the new version takes traffic. `migrate deploy` only
+  # applies committed migrations — safe to run on every release.
+  release_command = "npx prisma migrate deploy"
+
+[env]
+  NODE_ENV = "production"
+  PORT = "3000"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  # One machine, always: game state is in-memory, so a second instance would
+  # split games across processes. Scale UP (bigger machine), not OUT.
+  min_machines_running = 1
+
+[[vm]]
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1
+
+[checks]
+  [checks.health]
+    type = "http"
+    port = 3000
+    path = "/api/health"
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "30s"
