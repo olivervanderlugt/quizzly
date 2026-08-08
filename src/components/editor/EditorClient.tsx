@@ -18,6 +18,7 @@ import {
   saveQuestionAction,
 } from "@/app/actions/quiz";
 import { QuestionEditor, type DraftQuestion } from "./QuestionEditor";
+import { SlidePreview } from "./SlidePreview";
 import { ThemeEditor } from "./ThemeEditor";
 import { SettingsEditor } from "./SettingsEditor";
 import { AiPanel } from "./AiPanel";
@@ -430,28 +431,40 @@ export function EditorClient({
             </div>
           </aside>
 
-          {/* ── Editor ── */}
-          <section className="app-card p-5">
-            {selected ? (
-              <QuestionEditor
-                value={selected}
-                onChange={updateSelected}
-                onSave={save}
-                onDelete={() => remove(selected.id)}
-                saving={pending || saveStatus === "saving"}
-                error={error}
-                message={null}
-                saveLabel="Save now"
-                uploadQuizId={quizId}
-              />
-            ) : (
+          {/* ── Editor + live preview ── */}
+          {selected ? (
+            <div className="grid items-start gap-6 xl:grid-cols-[1fr_minmax(280px,340px)]">
+              <section className="app-card p-5">
+                <QuestionEditor
+                  value={selected}
+                  onChange={updateSelected}
+                  onSave={save}
+                  onDelete={() => remove(selected.id)}
+                  saving={pending || saveStatus === "saving"}
+                  error={error}
+                  message={null}
+                  saveLabel="Save now"
+                  uploadQuizId={quizId}
+                />
+              </section>
+              <aside className="xl:sticky xl:top-20">
+                <SlidePreview
+                  theme={initialTheme}
+                  question={selected}
+                  index={questions.findIndex((q) => q.id === selected.id)}
+                  total={questions.length}
+                />
+              </aside>
+            </div>
+          ) : (
+            <section className="app-card p-5">
               <p className="py-16 text-center text-ink-600">
                 {questions.length === 0
                   ? "Add your first question to get started."
                   : "Pick a question from the list."}
               </p>
-            )}
-          </section>
+            </section>
+          )}
         </div>
       ) : null}
 

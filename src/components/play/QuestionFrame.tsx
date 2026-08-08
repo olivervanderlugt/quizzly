@@ -11,6 +11,10 @@ import type { PlayerQuestionView } from "@/types/realtime";
  * image and then drop into a stripped-back text layout for a lightning round.
  * All six layouts share the same children (the answer control) — only the
  * composition around it changes.
+ *
+ * The editor's SlidePreview (src/components/editor/SlidePreview.tsx) mirrors
+ * these compositions. If you change how a layout composes here, update it
+ * there too.
  */
 
 export function QuestionFrame({
