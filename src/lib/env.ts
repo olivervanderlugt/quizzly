@@ -40,6 +40,11 @@ const schema = z.object({
 
   MAX_PLAYERS_PER_GAME: z.coerce.number().int().positive().max(10_000).default(500),
   MAX_QUESTIONS_PER_QUIZ: z.coerce.number().int().positive().max(500).default(100),
+
+  // Where uploaded slide images land. Relative paths resolve against the
+  // working directory; the Docker image points this at a mounted volume so
+  // uploads survive a redeploy.
+  UPLOADS_DIR: z.string().min(1).default("uploads"),
 });
 
 /**

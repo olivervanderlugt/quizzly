@@ -50,7 +50,11 @@ ENV PORT=3000
 
 RUN apk add --no-cache libc6-compat wget && \
     addgroup --system --gid 1001 nodejs && \
-    adduser --system --uid 1001 quizzly
+    adduser --system --uid 1001 quizzly && \
+    # Pre-create the uploads mount point owned by the app user — a named
+    # volume adopts the ownership of the directory it mounts over, and root
+    # ownership here would make every upload fail with EACCES.
+    mkdir -p /data/uploads && chown quizzly:nodejs /data/uploads
 
 # The whole built tree, node_modules and its .bin symlinks included. Build
 # tooling never reaches this stage because the build ran in the previous one.

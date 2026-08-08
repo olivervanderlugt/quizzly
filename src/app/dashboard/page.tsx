@@ -19,6 +19,7 @@ export default async function DashboardPage() {
     select: {
       id: true,
       title: true,
+      coverImage: true,
       mode: true,
       visibility: true,
       updatedAt: true,
@@ -134,6 +135,15 @@ export default async function DashboardPage() {
                   key={quiz.id}
                   className="app-card flex flex-col gap-4 p-4 sm:flex-row sm:items-center"
                 >
+                  {quiz.coverImage ? (
+                    // Decorative — the title beside it is the accessible name.
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={quiz.coverImage}
+                      alt=""
+                      className="h-16 w-24 shrink-0 rounded-lg border border-ink-800 object-cover"
+                    />
+                  ) : null}
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <h3 className="truncate font-semibold text-white">

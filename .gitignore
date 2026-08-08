@@ -23,6 +23,9 @@ dist/
 *.db-journal
 postgres-data/
 
+# user-uploaded slide images (served from UPLOADS_DIR, not the repo)
+uploads/
+
 # logs
 npm-debug.log*
 yarn-debug.log*

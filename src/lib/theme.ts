@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { isUploadPath } from "./uploads";
+
 /**
  * The theming system.
  *
@@ -436,12 +438,34 @@ export const LAYOUTS = {
 
 export type LayoutId = keyof typeof LAYOUTS;
 
+/**
+ * Either a full http(s) URL or the same-origin path of a file our own upload
+ * route produced. Anything else — javascript: URLs, data: URIs, bare paths —
+ * is rejected at the boundary.
+ */
+export const mediaSourceSchema = z
+  .string()
+  .max(2000)
+  .refine(
+    (v) => isUploadPath(v) || isHttpUrl(v),
+    "must be an http(s) image URL or an uploaded image",
+  );
+
+function isHttpUrl(value: string): boolean {
+  try {
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
 export const presentationSchema = z.object({
   layout: z
     .enum(Object.keys(LAYOUTS) as [LayoutId, ...LayoutId[]])
     .default("classic"),
   /** Image shown with the question. */
-  media: z.string().url().max(2000).optional(),
+  media: mediaSourceSchema.optional(),
   /** Alt text — required whenever media is set, checked in `validatePresentation`. */
   mediaAlt: z.string().trim().max(300).optional(),
   /** Overrides the theme accent for this one question. */

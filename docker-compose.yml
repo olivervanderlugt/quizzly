@@ -50,6 +50,11 @@ services:
       AI_RATE_LIMIT_PER_HOUR: ${AI_RATE_LIMIT_PER_HOUR:-20}
       MAX_PLAYERS_PER_GAME: ${MAX_PLAYERS_PER_GAME:-500}
       MAX_QUESTIONS_PER_QUIZ: ${MAX_QUESTIONS_PER_QUIZ:-100}
+      UPLOADS_DIR: /data/uploads
+    volumes:
+      # Slide images live outside the container filesystem so they survive
+      # rebuilds and redeploys, same as the database.
+      - uploads-data:/data/uploads
     ports:
       - "${PORT:-3000}:3000"
     # Apply migrations before serving. `migrate deploy` only ever applies
@@ -60,3 +65,4 @@ services:
 
 volumes:
   postgres-data:
+  uploads-data:

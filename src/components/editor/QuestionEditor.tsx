@@ -15,6 +15,7 @@ import {
   type LayoutId,
   type Presentation,
 } from "@/lib/theme";
+import { ImagePicker } from "./ImagePicker";
 
 /**
  * The question editor, shared by the quiz builder and the group-quiz
@@ -45,6 +46,11 @@ interface Props {
   message: string | null;
   /** Contributors submit; owners save. Only the wording differs. */
   saveLabel?: string;
+  /**
+   * Set when the editing user owns this quiz — enables file uploads for the
+   * question image. Contributors leave it unset and link images by URL.
+   */
+  uploadQuizId?: string;
 }
 
 export function QuestionEditor({
@@ -56,6 +62,7 @@ export function QuestionEditor({
   error,
   message,
   saveLabel = "Save question",
+  uploadQuizId,
 }: Props) {
   const [showLayout, setShowLayout] = useState(false);
   const meta = QUESTION_TYPE_MAP.get(value.payload.type);
@@ -189,6 +196,7 @@ export function QuestionEditor({
           <LayoutEditor
             presentation={value.presentation}
             onChange={(presentation) => patch({ presentation })}
+            uploadQuizId={uploadQuizId}
           />
         ) : null}
       </div>
@@ -711,9 +719,11 @@ function OptionList({
 function LayoutEditor({
   presentation,
   onChange,
+  uploadQuizId,
 }: {
   presentation: Presentation;
   onChange: (presentation: Presentation) => void;
+  uploadQuizId?: string;
 }) {
   const needsImage =
     presentation.layout === "banner" ||
@@ -745,21 +755,14 @@ function LayoutEditor({
         </p>
       </div>
 
-      <div>
-        <label className="app-label" htmlFor="media">
-          Image URL {needsImage ? <span className="text-red-400">*</span> : null}
-        </label>
-        <input
-          id="media"
-          type="url"
-          value={presentation.media ?? ""}
-          onChange={(e) =>
-            onChange({ ...presentation, media: e.target.value || undefined })
-          }
-          placeholder="https://…"
-          className="app-input"
-        />
-      </div>
+      <ImagePicker
+        inputId="media"
+        label="Image"
+        value={presentation.media}
+        onChange={(media) => onChange({ ...presentation, media })}
+        uploadQuizId={uploadQuizId}
+        required={needsImage}
+      />
 
       {presentation.media ? (
         <div>

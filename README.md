@@ -136,6 +136,23 @@ switches from a "not configured" message to a working drafting tool. Users can
 also save their own key under Settings to spend their own budget and skip the
 hourly rate limit.
 
+### Image uploads
+
+Quiz owners can upload slide and cover images instead of linking URLs. The
+limits and guarantees:
+
+- **5 MB per image**, PNG / JPEG / GIF / WebP only. The type is decided by the
+  file's magic bytes, never its extension or claimed MIME type.
+- **EXIF and other metadata are stripped** before the file touches disk, so a
+  phone photo doesn't publish its GPS coordinates.
+- Files are stored under `UPLOADS_DIR` (a named Docker volume in the compose
+  setup) with random unguessable names, and served same-origin from
+  `/uploads/…` — no third-party host, no extra cookie-banner implications.
+- Up to 60 uploads per user per hour.
+- Deleting a quiz does **not** delete its uploaded images yet — copies of a
+  quiz may still reference them. Reclaiming orphaned files is a manual
+  operation on the volume for now.
+
 ---
 
 ## Commands

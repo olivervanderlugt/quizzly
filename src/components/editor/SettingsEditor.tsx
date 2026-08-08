@@ -3,25 +3,51 @@
 import { useCallback, useState, useTransition } from "react";
 
 import type { QuizSettings } from "@/lib/scoring";
-import { updateSettingsAction, updateVisibilityAction } from "@/app/actions/quiz";
+import { mediaSourceSchema } from "@/lib/theme";
+import {
+  updateCoverImageAction,
+  updateSettingsAction,
+  updateVisibilityAction,
+} from "@/app/actions/quiz";
 import type { QuizVisibilityName } from "./EditorClient";
+import { ImagePicker } from "./ImagePicker";
 import { autosaveLabel, useAutosave, useUnsavedChangesWarning } from "./useAutosave";
 
 export function SettingsEditor({
   quizId,
   initialSettings,
   initialVisibility,
+  initialCoverImage,
   mode,
 }: {
   quizId: string;
   initialSettings: QuizSettings;
   initialVisibility: QuizVisibilityName;
+  initialCoverImage: string | null;
   mode: "SOLO" | "COLLAB";
 }) {
   const [settings, setSettings] = useState(initialSettings);
   const [visibility, setVisibility] = useState(initialVisibility);
   const [visibilityError, setVisibilityError] = useState<string | null>(null);
   const [visibilityPending, startVisibility] = useTransition();
+
+  const saveCover = useCallback(
+    (value: { url: string | null }) => {
+      // Don't round-trip half-typed URLs; the schema check on the server is
+      // the real gate, this just keeps the error quiet while someone types.
+      if (value.url !== null && !mediaSourceSchema.safeParse(value.url).success) {
+        return Promise.resolve({
+          error: "Enter a full http(s) URL, or upload a file.",
+        });
+      }
+      return updateCoverImageAction(quizId, value.url);
+    },
+    [quizId],
+  );
+  const [cover, setCover] = useState<{ url: string | null }>({
+    url: initialCoverImage,
+  });
+  const coverSave = useAutosave(cover, saveCover);
 
   const saveSettings = useCallback(
     (value: QuizSettings) => updateSettingsAction(quizId, value),
@@ -52,6 +78,27 @@ export function SettingsEditor({
 
   return (
     <div className="max-w-2xl space-y-6">
+      <section className="app-card p-5">
+        <h2 className="font-semibold text-white">Cover image</h2>
+        <p className="mt-1 text-sm text-ink-400">
+          Shown on your dashboard and, for public quizzes, on the Discover page.
+        </p>
+        <div className="mt-4">
+          <ImagePicker
+            inputId="cover-image"
+            label="Cover"
+            value={cover.url ?? undefined}
+            onChange={(url) => setCover({ url: url ?? null })}
+            uploadQuizId={quizId}
+          />
+        </div>
+        {coverSave.error ? (
+          <p role="alert" className="mt-2 text-sm text-red-400">
+            {coverSave.error}
+          </p>
+        ) : null}
+      </section>
+
       <section className="app-card p-5">
         <h2 className="font-semibold text-white">Sharing</h2>
 

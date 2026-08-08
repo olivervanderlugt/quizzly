@@ -69,6 +69,7 @@ export function EditorClient({
   initialTheme,
   initialSettings,
   initialVisibility,
+  initialCoverImage,
   mode,
   ai,
 }: {
@@ -79,6 +80,7 @@ export function EditorClient({
   initialTheme: Theme;
   initialSettings: QuizSettings;
   initialVisibility: QuizVisibilityName;
+  initialCoverImage: string | null;
   mode: "SOLO" | "COLLAB";
   ai: AiAvailability;
 }) {
@@ -440,6 +442,7 @@ export function EditorClient({
                 error={error}
                 message={null}
                 saveLabel="Save now"
+                uploadQuizId={quizId}
               />
             ) : (
               <p className="py-16 text-center text-ink-400">
@@ -461,6 +464,7 @@ export function EditorClient({
           quizId={quizId}
           initialSettings={initialSettings}
           initialVisibility={initialVisibility}
+          initialCoverImage={initialCoverImage}
           mode={mode}
         />
       ) : null}

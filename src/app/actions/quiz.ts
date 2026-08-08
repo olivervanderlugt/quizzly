@@ -18,6 +18,7 @@ import {
 import {
   DEFAULT_THEME,
   DEFAULT_PRESENTATION,
+  mediaSourceSchema,
   presentationSchema,
   themeSchema,
   validatePresentation,
@@ -153,6 +154,32 @@ export async function updateQuizMetaAction(
 
   revalidatePath(`/quiz/${quizId}/edit`);
   return { ok: true, message: "Saved." };
+}
+
+const coverImageSchema = mediaSourceSchema.nullable();
+
+export async function updateCoverImageAction(
+  quizId: string,
+  rawUrl: unknown,
+): Promise<ActionState> {
+  const user = await requireUser();
+  const quiz = await ownedQuiz(quizId, user.id);
+  if (!quiz) return { error: "Quiz not found." };
+
+  const parsed = coverImageSchema.safeParse(rawUrl);
+  if (!parsed.success) {
+    return { error: "The cover image must be an http(s) URL or an uploaded image." };
+  }
+
+  await db.quiz.update({
+    where: { id: quizId },
+    data: { coverImage: parsed.data },
+  });
+
+  revalidatePath(`/quiz/${quizId}/edit`);
+  revalidatePath("/dashboard");
+  revalidatePath("/discover");
+  return { ok: true, message: "Cover updated." };
 }
 
 export async function updateThemeAction(

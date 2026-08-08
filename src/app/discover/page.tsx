@@ -42,6 +42,7 @@ export default async function DiscoverPage({
       id: true,
       title: true,
       description: true,
+      coverImage: true,
       updatedAt: true,
       owner: { select: { displayName: true } },
       _count: { select: { questions: true, games: true } },
@@ -129,6 +130,15 @@ export default async function DiscoverPage({
                   key={quiz.id}
                   className="app-card flex flex-col gap-4 p-4 sm:flex-row sm:items-center"
                 >
+                  {quiz.coverImage ? (
+                    // Decorative — the title beside it is the accessible name.
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={quiz.coverImage}
+                      alt=""
+                      className="h-16 w-24 shrink-0 rounded-lg border border-ink-800 object-cover"
+                    />
+                  ) : null}
                   <div className="min-w-0 flex-1">
                     <h2 className="truncate font-semibold text-white">
                       {quiz.title}
