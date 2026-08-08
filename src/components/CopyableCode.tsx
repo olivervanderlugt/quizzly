@@ -44,7 +44,7 @@ export function CopyableCode({
   return (
     <div className="mt-3">
       <div className="flex flex-wrap items-center gap-3">
-        <code className="numeric rounded-lg bg-ink-950 px-4 py-2.5 text-2xl font-bold tracking-[0.2em] text-white">
+        <code className="numeric rounded-lg bg-ink-50 px-4 py-2.5 text-2xl font-bold tracking-[0.2em] text-ink-900">
           {code}
         </code>
         {canCopy ? (

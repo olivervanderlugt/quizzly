@@ -28,6 +28,9 @@
   --color-ink-900: #14152a;
   --color-ink-950: #0b0c18;
 
+  --color-brand-50: #eef2ff;
+  --color-brand-100: #e0e7ff;
+  --color-brand-200: #c7d2fe;
   --color-brand-400: #818cf8;
   --color-brand-500: #6366f1;
   --color-brand-600: #4f46e5;
@@ -47,9 +50,11 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* The app chrome is light — see DESIGN.md for the palette contract. The quiz
+   surface overrides all of this via `--q-*`. */
 body {
-  background: var(--color-ink-950);
-  color: var(--color-ink-100);
+  background: var(--color-ink-50);
+  color: var(--color-ink-700);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -57,9 +62,10 @@ body {
 
 /* Visible keyboard focus everywhere. Removing outlines without a replacement
    makes an app unusable by keyboard, which for a classroom tool is a
-   non-starter. */
+   non-starter. brand-600 clears the 3:1 non-text minimum on the light chrome
+   and is still clearly visible on the dark quiz themes. */
 :focus-visible {
-  outline: 2px solid var(--color-brand-400);
+  outline: 2px solid var(--color-brand-600);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -186,18 +192,19 @@ body {
 /* ──────────────────────────── App chrome ───────────────────────────────── */
 
 .app-card {
-  background: var(--color-ink-900);
-  border: 1px solid var(--color-ink-800);
+  background: white;
+  border: 1px solid var(--color-ink-200);
   border-radius: 0.875rem;
+  box-shadow: 0 1px 2px rgb(20 21 42 / 0.05);
 }
 
 .app-input {
   width: 100%;
-  background: var(--color-ink-950);
-  border: 1px solid var(--color-ink-700);
+  background: white;
+  border: 1px solid var(--color-ink-300);
   border-radius: 0.5rem;
   padding: 0.6rem 0.8rem;
-  color: var(--color-ink-50);
+  color: var(--color-ink-900);
   font-size: 0.95rem;
 }
 
@@ -215,7 +222,7 @@ body {
   display: block;
   font-size: 0.8rem;
   font-weight: 600;
-  color: var(--color-ink-300);
+  color: var(--color-ink-700);
   margin-bottom: 0.35rem;
 }
 
@@ -246,17 +253,17 @@ body {
 }
 
 .btn-primary:not(:disabled):hover {
-  background: var(--color-brand-500);
+  background: var(--color-brand-700);
 }
 
 .btn-ghost {
-  background: transparent;
-  color: var(--color-ink-200);
-  border: 1px solid var(--color-ink-700);
+  background: white;
+  color: var(--color-ink-700);
+  border: 1px solid var(--color-ink-300);
 }
 
 .btn-ghost:not(:disabled):hover {
-  background: var(--color-ink-800);
+  background: var(--color-ink-100);
 }
 
 .btn-danger {
@@ -266,6 +273,39 @@ body {
 
 .btn-danger:not(:disabled):hover {
   background: #dc2626;
+}
+
+/* The player and host screens reuse the chrome's form classes inside the
+   themed surface. There they keep their original dark rendering, so the light
+   chrome redesign cannot change how any quiz theme plays. */
+.quiz-surface .app-card {
+  background: var(--color-ink-900);
+  border-color: var(--color-ink-800);
+  box-shadow: none;
+}
+
+.quiz-surface .app-input {
+  background: var(--color-ink-950);
+  border-color: var(--color-ink-700);
+  color: var(--color-ink-50);
+}
+
+.quiz-surface .app-label {
+  color: var(--color-ink-300);
+}
+
+.quiz-surface .btn-primary:not(:disabled):hover {
+  background: var(--color-brand-500);
+}
+
+.quiz-surface .btn-ghost {
+  background: transparent;
+  color: var(--color-ink-200);
+  border-color: var(--color-ink-700);
+}
+
+.quiz-surface .btn-ghost:not(:disabled):hover {
+  background: var(--color-ink-800);
 }
 
 /* Screen-reader-only, for labels that must exist but not be seen. */

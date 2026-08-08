@@ -25,7 +25,7 @@ export function AiKeyForm({ hasKey }: { hasKey: boolean }) {
   return (
     <form action={formAction} className="mt-4">
       {hasKey ? (
-        <p className="mb-3 rounded-lg border border-emerald-900 bg-emerald-950/40 px-3 py-2 text-sm text-emerald-300">
+        <p className="mb-3 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
           A key is saved on your account.
         </p>
       ) : null}
@@ -43,12 +43,12 @@ export function AiKeyForm({ hasKey }: { hasKey: boolean }) {
       />
 
       {state.error ? (
-        <p role="alert" className="mt-2 text-sm text-red-400">
+        <p role="alert" className="mt-2 text-sm text-red-600">
           {state.error}
         </p>
       ) : null}
       {state.message ? (
-        <p role="status" className="mt-2 text-sm text-emerald-400">
+        <p role="status" className="mt-2 text-sm text-emerald-700">
           {state.message}
         </p>
       ) : null}

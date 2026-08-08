@@ -49,7 +49,7 @@ export function ThemeEditor({
       <div className="space-y-6">
         {/* ── Presets ── */}
         <section className="app-card p-5">
-          <h2 className="font-semibold text-white">Start from a preset</h2>
+          <h2 className="font-semibold text-ink-900">Start from a preset</h2>
           <ul className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
             {Object.entries(BUILT_IN_THEMES).map(([key, preset]) => (
               <li key={key}>
@@ -59,7 +59,7 @@ export function ThemeEditor({
                   className={`w-full overflow-hidden rounded-lg border text-left transition-colors ${
                     theme.name === preset.name
                       ? "border-brand-500"
-                      : "border-ink-800 hover:border-ink-600"
+                      : "border-ink-300 hover:border-ink-400"
                   }`}
                 >
                   <span
@@ -74,7 +74,7 @@ export function ThemeEditor({
                       />
                     ))}
                   </span>
-                  <span className="block px-2 py-1.5 text-xs font-medium text-ink-200">
+                  <span className="block px-2 py-1.5 text-xs font-medium text-ink-700">
                     {preset.name}
                   </span>
                 </button>
@@ -85,7 +85,7 @@ export function ThemeEditor({
 
         {/* ── Typography and shape ── */}
         <section className="app-card p-5">
-          <h2 className="font-semibold text-white">Type &amp; shape</h2>
+          <h2 className="font-semibold text-ink-900">Type &amp; shape</h2>
 
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <div>
@@ -135,9 +135,9 @@ export function ThemeEditor({
               type="checkbox"
               checked={theme.animations}
               onChange={(e) => patch({ animations: e.target.checked })}
-              className="h-5 w-5 accent-brand-500"
+              className="h-5 w-5 accent-brand-600"
             />
-            <span className="text-sm text-ink-200">
+            <span className="text-sm text-ink-700">
               Animations
               <span className="block text-xs text-ink-500">
                 Always overridden by the player&apos;s reduce-motion setting.
@@ -148,7 +148,7 @@ export function ThemeEditor({
 
         {/* ── Colours ── */}
         <section className="app-card p-5">
-          <h2 className="font-semibold text-white">Colours</h2>
+          <h2 className="font-semibold text-ink-900">Colours</h2>
 
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <ColorField
@@ -204,7 +204,7 @@ export function ThemeEditor({
 
         {/* ── Background ── */}
         <section className="app-card p-5">
-          <h2 className="font-semibold text-white">Background</h2>
+          <h2 className="font-semibold text-ink-900">Background</h2>
           <BackgroundEditor
             background={theme.background}
             onChange={(background) => patch({ background })}
@@ -212,13 +212,13 @@ export function ThemeEditor({
         </section>
 
         {error ? (
-          <p role="alert" className="text-sm text-red-400">
+          <p role="alert" className="text-sm text-red-600">
             {error}
           </p>
         ) : null}
         <p
           role="status"
-          className={`text-xs ${status === "error" ? "text-red-400" : "text-ink-500"}`}
+          className={`text-xs ${status === "error" ? "text-red-600" : "text-ink-500"}`}
         >
           {autosaveLabel(status)}
         </p>
@@ -228,7 +228,7 @@ export function ThemeEditor({
       <aside className="lg:sticky lg:top-20 lg:self-start">
         <p className="app-label">Preview</p>
         <div
-          className="quiz-surface overflow-hidden rounded-xl border border-ink-800 p-5"
+          className="quiz-surface overflow-hidden rounded-xl border border-ink-200 p-5"
           style={{ ...themeToCssVars(theme), minHeight: "auto" }}
         >
           <div className="quiz-card mb-4 px-4 py-5">
@@ -284,7 +284,7 @@ function ColorField({
           type="color"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="h-10 w-12 shrink-0 cursor-pointer rounded border border-ink-700 bg-transparent"
+          className="h-10 w-12 shrink-0 cursor-pointer rounded border border-ink-300 bg-transparent"
         />
         <input
           type="text"

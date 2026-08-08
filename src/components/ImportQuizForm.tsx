@@ -55,7 +55,7 @@ export function ImportQuizForm() {
         {pending ? "Importing…" : "Import a quiz file"}
       </button>
       {error ? (
-        <p role="alert" className="text-sm text-red-400">
+        <p role="alert" className="text-sm text-red-600">
           {error}
         </p>
       ) : null}

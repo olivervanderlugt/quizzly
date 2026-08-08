@@ -10,10 +10,10 @@ export default async function LandingPage() {
   const user = await getCurrentUser();
 
   return (
-    <div className="min-h-dvh bg-ink-950">
+    <div className="min-h-dvh bg-ink-50">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-5 py-5">
-        <span className="text-lg font-bold tracking-tight text-white">
-          Quiz<span className="text-brand-400">zly</span>
+        <span className="text-lg font-bold tracking-tight text-ink-900">
+          Quiz<span className="text-brand-600">zly</span>
         </span>
         <nav className="flex items-center gap-2 text-sm">
           <Link href="/discover" className="btn btn-ghost">
@@ -43,12 +43,12 @@ export default async function LandingPage() {
         <section className="mx-auto max-w-6xl px-5 pb-14 pt-8">
           <div className="grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:items-center">
             <div>
-              <h1 className="text-4xl font-extrabold leading-[1.05] tracking-tight text-white sm:text-5xl">
+              <h1 className="text-4xl font-extrabold leading-[1.05] tracking-tight text-ink-900 sm:text-5xl">
                 Live quizzes that
                 <br />
                 don&apos;t all look the same.
               </h1>
-              <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-300">
+              <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-700">
                 Ten question types, themes you can actually customise, and a
                 group mode where everybody writes questions nobody else can see
                 until they appear on screen.
@@ -65,10 +65,10 @@ export default async function LandingPage() {
             </div>
 
             <div className="app-card p-6">
-              <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-400">
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-600">
                 Got a game PIN?
               </h2>
-              <p className="mt-1 text-sm text-ink-400">
+              <p className="mt-1 text-sm text-ink-600">
                 No account needed. Nothing but your nickname is stored.
               </p>
               <JoinForm className="mt-4" />
@@ -77,15 +77,15 @@ export default async function LandingPage() {
         </section>
 
         {/* ── Group quizzes: the headline differentiator, so it gets the space. ── */}
-        <section className="border-y border-ink-800 bg-ink-900/40">
+        <section className="border-y border-ink-200 bg-white/60">
           <div className="mx-auto max-w-6xl px-5 py-14">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-400">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-600">
               The one nobody else does
             </p>
-            <h2 className="mt-3 max-w-2xl text-3xl font-bold tracking-tight text-white">
+            <h2 className="mt-3 max-w-2xl text-3xl font-bold tracking-tight text-ink-900">
               Blind group quizzes
             </h2>
-            <p className="mt-4 max-w-2xl text-lg leading-relaxed text-ink-300">
+            <p className="mt-4 max-w-2xl text-lg leading-relaxed text-ink-700">
               Share one invite code. Everyone submits their own questions — and
               nobody, including the host, can read anyone else&apos;s until the
               question appears on screen mid-game. Everybody gets to play,
@@ -114,8 +114,8 @@ export default async function LandingPage() {
                   <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-brand-600 text-sm font-bold text-white">
                     {item.step}
                   </span>
-                  <h3 className="mt-3 font-semibold text-white">{item.title}</h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-ink-400">
+                  <h3 className="mt-3 font-semibold text-ink-900">{item.title}</h3>
+                  <p className="mt-1.5 text-sm leading-relaxed text-ink-600">
                     {item.body}
                   </p>
                 </li>
@@ -133,10 +133,10 @@ export default async function LandingPage() {
 
         {/* ── Question types ── */}
         <section id="features" className="mx-auto max-w-6xl px-5 py-14">
-          <h2 className="text-3xl font-bold tracking-tight text-white">
+          <h2 className="text-3xl font-bold tracking-tight text-ink-900">
             Ten ways to ask something
           </h2>
-          <p className="mt-3 max-w-2xl text-ink-300">
+          <p className="mt-3 max-w-2xl text-ink-700">
             Multiple choice is the default, not the ceiling. Ordering, matching
             and sliders all award partial credit, so a near-miss still counts.
           </p>
@@ -146,13 +146,13 @@ export default async function LandingPage() {
               <li key={type.id} className="app-card flex gap-3 p-4">
                 <span
                   aria-hidden
-                  className="mt-0.5 text-lg leading-none text-brand-400"
+                  className="mt-0.5 text-lg leading-none text-brand-600"
                 >
                   {type.icon}
                 </span>
                 <div>
-                  <h3 className="font-semibold text-white">{type.label}</h3>
-                  <p className="mt-1 text-sm leading-relaxed text-ink-400">
+                  <h3 className="font-semibold text-ink-900">{type.label}</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-ink-600">
                     {type.blurb}
                   </p>
                 </div>
@@ -162,12 +162,12 @@ export default async function LandingPage() {
         </section>
 
         {/* ── Theming ── */}
-        <section className="border-t border-ink-800 bg-ink-900/40">
+        <section className="border-t border-ink-200 bg-white/60">
           <div className="mx-auto max-w-6xl px-5 py-14">
-            <h2 className="text-3xl font-bold tracking-tight text-white">
+            <h2 className="text-3xl font-bold tracking-tight text-ink-900">
               Make it look like yours
             </h2>
-            <p className="mt-3 max-w-2xl text-ink-300">
+            <p className="mt-3 max-w-2xl text-ink-700">
               Ten built-in themes, six question layouts, and a custom theme
               editor underneath. Every colour, font pairing, answer shape and
               background is yours to change — and it travels with the quiz when
@@ -178,7 +178,7 @@ export default async function LandingPage() {
               {Object.entries(BUILT_IN_THEMES).map(([key, theme]) => (
                 <li
                   key={key}
-                  className="overflow-hidden rounded-xl border border-ink-800"
+                  className="overflow-hidden rounded-xl border border-ink-200"
                 >
                   <div
                     className="flex h-20 items-end gap-1 p-2"
@@ -192,7 +192,7 @@ export default async function LandingPage() {
                       />
                     ))}
                   </div>
-                  <div className="bg-ink-900 px-3 py-2 text-sm font-medium text-ink-200">
+                  <div className="bg-white px-3 py-2 text-sm font-medium text-ink-700">
                     {theme.name}
                   </div>
                 </li>
@@ -204,10 +204,10 @@ export default async function LandingPage() {
         {/* ── AI ── */}
         <section className="mx-auto max-w-6xl px-5 py-14">
           <div className="app-card p-7">
-            <h2 className="text-2xl font-bold tracking-tight text-white">
+            <h2 className="text-2xl font-bold tracking-tight text-ink-900">
               Draft a round in seconds
             </h2>
-            <p className="mt-3 max-w-2xl leading-relaxed text-ink-300">
+            <p className="mt-3 max-w-2xl leading-relaxed text-ink-700">
               Give it a topic, or paste your source material and have questions
               written strictly from it. Everything lands in the editor as a
               draft — you review and edit before anyone plays it.
@@ -221,14 +221,14 @@ export default async function LandingPage() {
         </section>
       </main>
 
-      <footer className="border-t border-ink-800">
+      <footer className="border-t border-ink-200">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-8 text-sm text-ink-500 sm:flex-row sm:items-center sm:justify-between">
           <p>Quizzly — self-hosted, MIT licensed.</p>
           <nav className="flex gap-4">
-            <Link href="/privacy" className="hover:text-ink-300">
+            <Link href="/privacy" className="hover:text-ink-900">
               Privacy
             </Link>
-            <Link href="/terms" className="hover:text-ink-300">
+            <Link href="/terms" className="hover:text-ink-900">
               Terms
             </Link>
           </nav>

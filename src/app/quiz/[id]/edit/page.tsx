@@ -55,13 +55,13 @@ export default async function EditQuizPage({
   }));
 
   return (
-    <div className="min-h-dvh bg-ink-950">
-      <header className="sticky top-0 z-10 border-b border-ink-800 bg-ink-950/95 backdrop-blur">
+    <div className="min-h-dvh bg-ink-50">
+      <header className="sticky top-0 z-10 border-b border-ink-200 bg-white/90 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-5 py-3">
-          <Link href="/dashboard" className="text-sm text-ink-400 hover:text-ink-200">
+          <Link href="/dashboard" className="text-sm text-ink-600 hover:text-ink-900">
             ← Dashboard
           </Link>
-          <span className="min-w-0 flex-1 truncate font-semibold text-white">
+          <span className="min-w-0 flex-1 truncate font-semibold text-ink-900">
             {quiz.title}
           </span>
           <span className="hidden text-sm text-ink-500 sm:inline">

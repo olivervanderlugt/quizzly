@@ -43,19 +43,19 @@ export default async function ContributePage({
   const otherCount = questions.length - mine.length;
 
   return (
-    <div className="min-h-dvh bg-ink-950">
-      <header className="border-b border-ink-800">
+    <div className="min-h-dvh bg-ink-50">
+      <header className="border-b border-ink-200">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-5 py-4">
-          <Link href="/dashboard" className="text-sm text-ink-400 hover:text-ink-200">
+          <Link href="/dashboard" className="text-sm text-ink-600 hover:text-ink-900">
             ← Dashboard
           </Link>
-          <span className="text-sm text-ink-400">Contributing</span>
+          <span className="text-sm text-ink-600">Contributing</span>
         </div>
       </header>
 
       <main id="main" className="mx-auto max-w-3xl px-5 py-8">
-        <h1 className="text-2xl font-bold text-white">{quiz.title}</h1>
-        <p className="mt-1 text-ink-400">
+        <h1 className="text-2xl font-bold text-ink-900">{quiz.title}</h1>
+        <p className="mt-1 text-ink-600">
           You&apos;ve submitted {mine.length} of {quiz.collabQuota}.
           {otherCount > 0
             ? ` ${otherCount} other question${otherCount === 1 ? "" : "s"} submitted — you can't see them, and they can't see yours.`
@@ -63,7 +63,7 @@ export default async function ContributePage({
         </p>
 
         {quiz.ownerReviewedAt ? (
-          <p className="mt-4 rounded-lg border border-amber-800 bg-amber-950/50 px-4 py-3 text-sm text-amber-200">
+          <p className="mt-4 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
             The host reviewed all submissions on{" "}
             {quiz.ownerReviewedAt.toLocaleDateString()} to check for anything
             inappropriate. They&apos;ve seen your questions.
@@ -71,7 +71,7 @@ export default async function ContributePage({
         ) : null}
 
         {quiz.collabStage === "LOCKED" ? (
-          <p className="mt-4 rounded-lg border border-ink-700 bg-ink-900 px-4 py-3 text-sm text-ink-300">
+          <p className="mt-4 rounded-lg border border-ink-300 bg-white px-4 py-3 text-sm text-ink-700">
             Submissions are closed. Your questions are locked in — see you at the
             game.
           </p>

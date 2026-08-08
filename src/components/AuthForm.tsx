@@ -53,7 +53,7 @@ export function AuthForm({
             aria-describedby={state.fieldErrors?.displayName ? "displayName-error" : undefined}
           />
           {state.fieldErrors?.displayName ? (
-            <p id="displayName-error" className="mt-1.5 text-sm text-red-400">
+            <p id="displayName-error" className="mt-1.5 text-sm text-red-600">
               {state.fieldErrors.displayName}
             </p>
           ) : null}
@@ -75,7 +75,7 @@ export function AuthForm({
           aria-describedby={state.fieldErrors?.email ? "email-error" : undefined}
         />
         {state.fieldErrors?.email ? (
-          <p id="email-error" className="mt-1.5 text-sm text-red-400">
+          <p id="email-error" className="mt-1.5 text-sm text-red-600">
             {state.fieldErrors.email}
           </p>
         ) : null}
@@ -107,7 +107,7 @@ export function AuthForm({
           </p>
         ) : null}
         {state.fieldErrors?.password ? (
-          <p id="password-error" className="mt-1.5 text-sm text-red-400">
+          <p id="password-error" className="mt-1.5 text-sm text-red-600">
             {state.fieldErrors.password}
           </p>
         ) : null}
@@ -116,7 +116,7 @@ export function AuthForm({
       {state.error ? (
         <p
           role="alert"
-          className="mt-4 rounded-lg border border-red-900 bg-red-950/60 px-3 py-2 text-sm text-red-300"
+          className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
         >
           {state.error}
         </p>

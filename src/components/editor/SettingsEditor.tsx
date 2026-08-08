@@ -79,8 +79,8 @@ export function SettingsEditor({
   return (
     <div className="max-w-2xl space-y-6">
       <section className="app-card p-5">
-        <h2 className="font-semibold text-white">Cover image</h2>
-        <p className="mt-1 text-sm text-ink-400">
+        <h2 className="font-semibold text-ink-900">Cover image</h2>
+        <p className="mt-1 text-sm text-ink-600">
           Shown on your dashboard and, for public quizzes, on the Discover page.
         </p>
         <div className="mt-4">
@@ -93,17 +93,17 @@ export function SettingsEditor({
           />
         </div>
         {coverSave.error ? (
-          <p role="alert" className="mt-2 text-sm text-red-400">
+          <p role="alert" className="mt-2 text-sm text-red-600">
             {coverSave.error}
           </p>
         ) : null}
       </section>
 
       <section className="app-card p-5">
-        <h2 className="font-semibold text-white">Sharing</h2>
+        <h2 className="font-semibold text-ink-900">Sharing</h2>
 
         {mode === "COLLAB" ? (
-          <p className="mt-3 text-sm text-ink-400">
+          <p className="mt-3 text-sm text-ink-600">
             Group quizzes stay private. Contributors were promised nobody could
             read their questions before the game — a public listing would break
             that promise.
@@ -120,7 +120,7 @@ export function SettingsEditor({
               <p className="text-xs text-ink-500">Updating…</p>
             ) : null}
             {visibilityError ? (
-              <p role="alert" className="text-sm text-red-400">
+              <p role="alert" className="text-sm text-red-600">
                 {visibilityError}
               </p>
             ) : null}
@@ -129,7 +129,7 @@ export function SettingsEditor({
       </section>
 
       <section className="app-card p-5">
-        <h2 className="font-semibold text-white">Scoring</h2>
+        <h2 className="font-semibold text-ink-900">Scoring</h2>
 
         <div className="mt-4 space-y-4">
           <Check
@@ -204,7 +204,7 @@ export function SettingsEditor({
       </section>
 
       <section className="app-card p-5">
-        <h2 className="font-semibold text-white">Flow</h2>
+        <h2 className="font-semibold text-ink-900">Flow</h2>
 
         <div className="mt-4 space-y-4">
           <Check
@@ -273,13 +273,13 @@ export function SettingsEditor({
       </section>
 
       {error ? (
-        <p role="alert" className="text-sm text-red-400">
+        <p role="alert" className="text-sm text-red-600">
           {error}
         </p>
       ) : null}
       <p
         role="status"
-        className={`text-xs ${status === "error" ? "text-red-400" : "text-ink-500"}`}
+        className={`text-xs ${status === "error" ? "text-red-600" : "text-ink-500"}`}
       >
         {autosaveLabel(status)}
       </p>
@@ -304,10 +304,10 @@ function Check({
         type="checkbox"
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
-        className="mt-0.5 h-5 w-5 shrink-0 accent-brand-500"
+        className="mt-0.5 h-5 w-5 shrink-0 accent-brand-600"
       />
       <span>
-        <span className="text-sm font-medium text-ink-200">{label}</span>
+        <span className="text-sm font-medium text-ink-700">{label}</span>
         {hint ? <span className="block text-xs text-ink-500">{hint}</span> : null}
       </span>
     </label>

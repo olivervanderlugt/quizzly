@@ -50,11 +50,11 @@ export default async function DiscoverPage({
   });
 
   return (
-    <div className="min-h-dvh bg-ink-950">
-      <header className="border-b border-ink-800">
+    <div className="min-h-dvh bg-ink-50">
+      <header className="border-b border-ink-200">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-4">
-          <Link href="/" className="font-bold tracking-tight text-white">
-            Quiz<span className="text-brand-400">zly</span>
+          <Link href="/" className="font-bold tracking-tight text-ink-900">
+            Quiz<span className="text-brand-600">zly</span>
           </Link>
           <nav className="flex items-center gap-2 text-sm">
             {user ? (
@@ -76,19 +76,19 @@ export default async function DiscoverPage({
       </header>
 
       <main id="main" className="mx-auto max-w-5xl px-5 py-8">
-        <h1 className="text-2xl font-bold text-white">Discover</h1>
-        <p className="mt-2 max-w-2xl text-ink-400">
+        <h1 className="text-2xl font-bold text-ink-900">Discover</h1>
+        <p className="mt-2 max-w-2xl text-ink-600">
           Quizzes other people have made public. Host one as-is, or save a copy
           and make it yours — no need to write a quiz from scratch every time.
         </p>
 
         {error === "empty" ? (
-          <p role="alert" className="mt-4 rounded-lg border border-red-900 bg-red-950/60 px-3 py-2 text-sm text-red-300">
+          <p role="alert" className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
             That quiz has no questions to play.
           </p>
         ) : null}
         {error === "pin" ? (
-          <p role="alert" className="mt-4 rounded-lg border border-red-900 bg-red-950/60 px-3 py-2 text-sm text-red-300">
+          <p role="alert" className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
             Couldn&apos;t find a free game PIN — try again.
           </p>
         ) : null}
@@ -113,7 +113,7 @@ export default async function DiscoverPage({
 
         <section className="mt-8">
           {quizzes.length === 0 ? (
-            <p className="app-card p-8 text-center text-ink-400">
+            <p className="app-card p-8 text-center text-ink-600">
               {query ? (
                 <>Nothing public matches &quot;{query}&quot;.</>
               ) : (
@@ -136,15 +136,15 @@ export default async function DiscoverPage({
                     <img
                       src={quiz.coverImage}
                       alt=""
-                      className="h-16 w-24 shrink-0 rounded-lg border border-ink-800 object-cover"
+                      className="h-16 w-24 shrink-0 rounded-lg border border-ink-200 object-cover"
                     />
                   ) : null}
                   <div className="min-w-0 flex-1">
-                    <h2 className="truncate font-semibold text-white">
+                    <h2 className="truncate font-semibold text-ink-900">
                       {quiz.title}
                     </h2>
                     {quiz.description ? (
-                      <p className="mt-1 line-clamp-2 text-sm text-ink-400">
+                      <p className="mt-1 line-clamp-2 text-sm text-ink-600">
                         {quiz.description}
                       </p>
                     ) : null}

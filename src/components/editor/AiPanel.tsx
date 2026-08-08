@@ -45,14 +45,14 @@ export function AiPanel({
   if (!availability.available) {
     return (
       <div className="app-card max-w-2xl p-6">
-        <h2 className="font-semibold text-white">AI drafting isn&apos;t set up</h2>
-        <p className="mt-2 text-sm leading-relaxed text-ink-400">
+        <h2 className="font-semibold text-ink-900">AI drafting isn&apos;t set up</h2>
+        <p className="mt-2 text-sm leading-relaxed text-ink-600">
           {availability.reason}
         </p>
         <p className="mt-4 text-sm leading-relaxed text-ink-500">
           Everything else in Quizzly works without it — this panel is the only
           thing affected. To switch it on, set{" "}
-          <code className="rounded bg-ink-950 px-1.5 py-0.5 font-mono text-xs">
+          <code className="rounded bg-ink-50 px-1.5 py-0.5 font-mono text-xs">
             ANTHROPIC_API_KEY
           </code>{" "}
           in the server environment and restart, or save a personal key under
@@ -91,8 +91,8 @@ export function AiPanel({
   return (
     <div className="max-w-2xl space-y-5">
       <div className="app-card p-5">
-        <h2 className="font-semibold text-white">Draft questions with AI</h2>
-        <p className="mt-1 text-sm text-ink-400">
+        <h2 className="font-semibold text-ink-900">Draft questions with AI</h2>
+        <p className="mt-1 text-sm text-ink-600">
           Everything lands in your question list as an editable draft. Nothing is
           played until you&apos;ve looked at it.
           {availability.source === "user"
@@ -213,7 +213,7 @@ export function AiPanel({
         {error ? (
           <p
             role="alert"
-            className="mt-4 rounded-lg border border-red-900 bg-red-950/60 px-3 py-2 text-sm text-red-300"
+            className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
           >
             {error}
           </p>
@@ -221,7 +221,7 @@ export function AiPanel({
         {message ? (
           <p
             role="status"
-            className="mt-4 rounded-lg border border-emerald-900 bg-emerald-950/50 px-3 py-2 text-sm text-emerald-300"
+            className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800"
           >
             {message}
           </p>

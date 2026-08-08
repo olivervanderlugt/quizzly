@@ -14,31 +14,31 @@ export const metadata = { title: "Privacy" };
  */
 export default function PrivacyPage() {
   return (
-    <div className="min-h-dvh bg-ink-950">
-      <header className="border-b border-ink-800">
+    <div className="min-h-dvh bg-ink-50">
+      <header className="border-b border-ink-200">
         <div className="mx-auto max-w-3xl px-5 py-4">
-          <Link href="/" className="text-sm text-ink-400 hover:text-ink-200">
+          <Link href="/" className="text-sm text-ink-600 hover:text-ink-900">
             ← Home
           </Link>
         </div>
       </header>
 
       <main id="main" className="mx-auto max-w-3xl px-5 py-10">
-        <div className="mb-8 rounded-lg border border-amber-800 bg-amber-950/50 px-4 py-3 text-sm text-amber-200">
+        <div className="mb-8 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
           <strong>Operator note:</strong> this is a template. Replace every{" "}
-          <code className="rounded bg-black/30 px-1">[BRACKETED]</code> field
+          <code className="rounded bg-ink-100 px-1">[BRACKETED]</code> field
           below and delete this banner before going live. The factual sections
           about what the software collects are accurate as written.
         </div>
 
-        <h1 className="text-3xl font-bold text-white">Privacy notice</h1>
+        <h1 className="text-3xl font-bold text-ink-900">Privacy notice</h1>
         <p className="mt-2 text-sm text-ink-500">
           Last updated: [DATE]
         </p>
 
-        <div className="prose-quizzly mt-8 space-y-8 text-ink-300">
+        <div className="prose-quizzly mt-8 space-y-8 text-ink-700">
           <section>
-            <h2 className="text-xl font-semibold text-white">Who we are</h2>
+            <h2 className="text-xl font-semibold text-ink-900">Who we are</h2>
             <p className="mt-2 leading-relaxed">
               This service is operated by <strong>[LEGAL ENTITY NAME]</strong>,{" "}
               [REGISTERED ADDRESS]. For anything about your data, contact{" "}
@@ -51,7 +51,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-white">
+            <h2 className="text-xl font-semibold text-ink-900">
               Playing a quiz: what we collect
             </h2>
             <p className="mt-2 leading-relaxed">
@@ -83,7 +83,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-white">
+            <h2 className="text-xl font-semibold text-ink-900">
               Holding an account: what we collect
             </h2>
             <p className="mt-2 leading-relaxed">
@@ -100,7 +100,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-white">
+            <h2 className="text-xl font-semibold text-ink-900">
               Why we&apos;re allowed to hold it
             </h2>
             <p className="mt-2 leading-relaxed">
@@ -114,7 +114,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-white">Children</h2>
+            <h2 className="text-xl font-semibold text-ink-900">Children</h2>
             <p className="mt-2 leading-relaxed">
               This software is deliberately built so that <em>playing</em> a quiz
               involves no personal data, which is why a class of children can
@@ -128,7 +128,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-white">How long we keep it</h2>
+            <h2 className="text-xl font-semibold text-ink-900">How long we keep it</h2>
             <ul className="mt-3 space-y-1.5 pl-5">
               <li className="list-disc">
                 Game records, including nicknames and answers: [RETENTION PERIOD
@@ -144,7 +144,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-white">Who else sees it</h2>
+            <h2 className="text-xl font-semibold text-ink-900">Who else sees it</h2>
             <p className="mt-2 leading-relaxed">
               We do not sell your data or share it for advertising. Data is
               shared only with the infrastructure providers needed to run the
@@ -160,7 +160,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-white">Your rights</h2>
+            <h2 className="text-xl font-semibold text-ink-900">Your rights</h2>
             <p className="mt-2 leading-relaxed">
               If you are in the UK or EU you can ask for a copy of your data, ask
               us to correct or delete it, object to processing, or ask for it in
@@ -173,7 +173,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-white">Where your data is</h2>
+            <h2 className="text-xl font-semibold text-ink-900">Where your data is</h2>
             <p className="mt-2 leading-relaxed">
               Data is stored in [REGION/COUNTRY]. [If you transfer data outside
               the UK/EEA, name the safeguard you rely on — for example Standard

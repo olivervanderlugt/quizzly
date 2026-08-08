@@ -67,7 +67,7 @@ export function ImagePicker({
   return (
     <div>
       <label className="app-label" htmlFor={inputId}>
-        {label} {required ? <span className="text-red-400">*</span> : null}
+        {label} {required ? <span className="text-red-600">*</span> : null}
       </label>
 
       <div className="flex gap-2">
@@ -113,7 +113,7 @@ export function ImagePicker({
       ) : null}
 
       {uploadError ? (
-        <p role="alert" className="mt-1.5 text-sm text-red-400">
+        <p role="alert" className="mt-1.5 text-sm text-red-600">
           {uploadError}
         </p>
       ) : null}
@@ -125,7 +125,7 @@ export function ImagePicker({
         <img
           src={value}
           alt=""
-          className="mt-3 max-h-44 rounded-lg border border-ink-800 object-contain"
+          className="mt-3 max-h-44 rounded-lg border border-ink-200 object-contain"
         />
       ) : null}
     </div>

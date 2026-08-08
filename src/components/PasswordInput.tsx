@@ -29,7 +29,7 @@ export function PasswordInput({
         aria-pressed={visible}
         aria-label="Show password"
         onClick={() => setVisible((v) => !v)}
-        className="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-lg text-ink-400 hover:text-ink-200"
+        className="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-lg text-ink-600 hover:text-ink-900"
       >
         {visible ? (
           // Eye with a slash: password is currently shown.

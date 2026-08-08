@@ -30,14 +30,14 @@ export default async function DashboardPage() {
   });
 
   return (
-    <div className="min-h-dvh bg-ink-950">
-      <header className="border-b border-ink-800">
+    <div className="min-h-dvh bg-ink-50">
+      <header className="border-b border-ink-200">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-4">
-          <Link href="/dashboard" className="font-bold tracking-tight text-white">
-            Quiz<span className="text-brand-400">zly</span>
+          <Link href="/dashboard" className="font-bold tracking-tight text-ink-900">
+            Quiz<span className="text-brand-600">zly</span>
           </Link>
           <div className="flex items-center gap-3 text-sm">
-            <span className="hidden text-ink-400 sm:inline">{user.displayName}</span>
+            <span className="hidden text-ink-600 sm:inline">{user.displayName}</span>
             <Link href="/discover" className="btn btn-ghost py-1.5 text-sm">
               Discover
             </Link>
@@ -54,14 +54,14 @@ export default async function DashboardPage() {
       </header>
 
       <main id="main" className="mx-auto max-w-5xl px-5 py-8">
-        <h1 className="text-2xl font-bold text-white">Your quizzes</h1>
+        <h1 className="text-2xl font-bold text-ink-900">Your quizzes</h1>
 
         {/* ── Create ── */}
         <div className="mt-6 grid gap-4 sm:grid-cols-2">
           <form action={createQuizAction} className="app-card p-5">
             <input type="hidden" name="mode" value="SOLO" />
-            <h2 className="font-semibold text-white">New quiz</h2>
-            <p className="mt-1 text-sm text-ink-400">
+            <h2 className="font-semibold text-ink-900">New quiz</h2>
+            <p className="mt-1 text-sm text-ink-600">
               You write the questions.
             </p>
             <label className="sr-only" htmlFor="solo-title">
@@ -79,15 +79,15 @@ export default async function DashboardPage() {
             </button>
           </form>
 
-          <form action={createQuizAction} className="app-card border-brand-700 p-5">
+          <form action={createQuizAction} className="app-card border-brand-400 p-5">
             <input type="hidden" name="mode" value="COLLAB" />
-            <h2 className="font-semibold text-white">
+            <h2 className="font-semibold text-ink-900">
               New group quiz
               <span className="ml-2 rounded bg-brand-600 px-1.5 py-0.5 align-middle text-[10px] font-bold uppercase tracking-wide text-white">
                 blind
               </span>
             </h2>
-            <p className="mt-1 text-sm text-ink-400">
+            <p className="mt-1 text-sm text-ink-600">
               Everyone submits questions nobody else can see until game time.
             </p>
             <label className="sr-only" htmlFor="collab-title">
@@ -125,7 +125,7 @@ export default async function DashboardPage() {
         {/* ── List ── */}
         <section className="mt-10">
           {quizzes.length === 0 ? (
-            <p className="app-card p-8 text-center text-ink-400">
+            <p className="app-card p-8 text-center text-ink-600">
               Nothing here yet. Create your first quiz above.
             </p>
           ) : (
@@ -141,26 +141,26 @@ export default async function DashboardPage() {
                     <img
                       src={quiz.coverImage}
                       alt=""
-                      className="h-16 w-24 shrink-0 rounded-lg border border-ink-800 object-cover"
+                      className="h-16 w-24 shrink-0 rounded-lg border border-ink-200 object-cover"
                     />
                   ) : null}
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="truncate font-semibold text-white">
+                      <h3 className="truncate font-semibold text-ink-900">
                         {quiz.title}
                       </h3>
                       {quiz.mode === "COLLAB" ? (
-                        <span className="rounded bg-brand-900 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-300">
+                        <span className="rounded bg-brand-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-700">
                           group · {quiz.collabStage === "COLLECTING" ? "collecting" : "locked"}
                         </span>
                       ) : null}
                       {quiz.visibility === "PUBLIC" ? (
-                        <span className="rounded bg-emerald-900 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-300">
+                        <span className="rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-800">
                           public
                         </span>
                       ) : null}
                     </div>
-                    <p className="mt-1 text-sm text-ink-400">
+                    <p className="mt-1 text-sm text-ink-600">
                       {quiz._count.questions} question
                       {quiz._count.questions === 1 ? "" : "s"}
                       {quiz._count.games > 0
@@ -211,7 +211,7 @@ export default async function DashboardPage() {
                       <input type="hidden" name="quizId" value={quiz.id} />
                       <button
                         type="submit"
-                        className="btn btn-ghost py-1.5 text-sm text-red-400"
+                        className="btn btn-ghost py-1.5 text-sm text-red-600"
                         aria-label={`Delete ${quiz.title}`}
                       >
                         Delete

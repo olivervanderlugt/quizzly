@@ -46,7 +46,7 @@ export function JoinForm({ className = "" }: { className?: string }) {
         aria-invalid={error ? true : undefined}
       />
       {error ? (
-        <p id="pin-error" role="alert" className="mt-2 text-sm text-red-400">
+        <p id="pin-error" role="alert" className="mt-2 text-sm text-red-600">
           {error}
         </p>
       ) : null}

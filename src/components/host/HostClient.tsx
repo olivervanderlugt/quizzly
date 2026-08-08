@@ -137,8 +137,8 @@ export function HostClient({
 
   if (alreadyEnded) {
     return (
-      <main id="main" className="flex min-h-dvh items-center justify-center bg-ink-950 p-6">
-        <p className="text-ink-300">This game has already finished.</p>
+      <main id="main" className="flex min-h-dvh items-center justify-center bg-ink-50 p-6">
+        <p className="text-ink-600">This game has already finished.</p>
       </main>
     );
   }

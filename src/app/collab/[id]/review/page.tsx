@@ -29,23 +29,23 @@ export default async function ReviewPage({
   if (!result.ok) notFound();
 
   return (
-    <div className="min-h-dvh bg-ink-950">
-      <header className="border-b border-ink-800">
+    <div className="min-h-dvh bg-ink-50">
+      <header className="border-b border-ink-200">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-5 py-4">
           <Link
             href={`/collab/${id}`}
-            className="text-sm text-ink-400 hover:text-ink-200"
+            className="text-sm text-ink-600 hover:text-ink-900"
           >
             ← Back
           </Link>
-          <span className="text-sm text-ink-400">Moderation</span>
+          <span className="text-sm text-ink-600">Moderation</span>
         </div>
       </header>
 
       <main id="main" className="mx-auto max-w-3xl px-5 py-8">
-        <h1 className="text-2xl font-bold text-white">Submitted questions</h1>
+        <h1 className="text-2xl font-bold text-ink-900">Submitted questions</h1>
 
-        <p className="mt-4 rounded-lg border border-amber-800 bg-amber-950/50 px-4 py-3 text-sm text-amber-200">
+        <p className="mt-4 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
           {result.firstReview
             ? "Every contributor has now been told you reviewed the submissions. You've also spoiled the quiz for yourself — consider having someone else host."
             : "You've reviewed these before. Contributors have been told."}
@@ -59,12 +59,12 @@ export default async function ReviewPage({
                   {index + 1}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="font-medium text-white">
+                  <p className="font-medium text-ink-900">
                     {question.prompt || "(no prompt)"}
                   </p>
-                  <p className="mt-1.5 text-sm text-ink-400">
+                  <p className="mt-1.5 text-sm text-ink-600">
                     Answer:{" "}
-                    <span className="text-ink-200">
+                    <span className="text-ink-700">
                       {describeCorrectAnswer(question.payload)}
                     </span>
                   </p>
@@ -79,7 +79,7 @@ export default async function ReviewPage({
                   <input type="hidden" name="quizId" value={id} />
                   <button
                     type="submit"
-                    className="btn btn-ghost py-1.5 text-sm text-red-400"
+                    className="btn btn-ghost py-1.5 text-sm text-red-600"
                   >
                     Remove
                   </button>

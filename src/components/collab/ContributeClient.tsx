@@ -74,10 +74,10 @@ export function ContributeClient({
     <div className="mt-8 space-y-8">
       {/* ── Already submitted ── */}
       <section>
-        <h2 className="mb-3 font-semibold text-white">Your questions</h2>
+        <h2 className="mb-3 font-semibold text-ink-900">Your questions</h2>
 
         {existing.length === 0 ? (
-          <p className="app-card p-5 text-sm text-ink-400">
+          <p className="app-card p-5 text-sm text-ink-600">
             Nothing submitted yet. Write your first below.
           </p>
         ) : (
@@ -91,7 +91,7 @@ export function ContributeClient({
                   {index + 1}
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate font-medium text-white">
+                  <span className="block truncate font-medium text-ink-900">
                     {question.prompt || "(no prompt)"}
                   </span>
                   <span className="text-xs text-ink-500">{question.type}</span>
@@ -101,7 +101,7 @@ export function ContributeClient({
                     type="button"
                     onClick={() => withdraw(question.id)}
                     disabled={pending}
-                    className="btn btn-ghost py-1.5 text-sm text-red-400"
+                    className="btn btn-ghost py-1.5 text-sm text-red-600"
                   >
                     Withdraw
                   </button>
@@ -115,12 +115,12 @@ export function ContributeClient({
       {/* ── New question ── */}
       {!locked ? (
         <section className="app-card p-5">
-          <h2 className="mb-1 font-semibold text-white">
+          <h2 className="mb-1 font-semibold text-ink-900">
             {existing.length >= quota
               ? "Add another (you've hit your quota)"
               : `Write question ${existing.length + 1}`}
           </h2>
-          <p className="mb-5 text-sm text-ink-400">
+          <p className="mb-5 text-sm text-ink-600">
             Only you can see this until it appears on screen during the game.
           </p>
 

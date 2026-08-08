@@ -5,28 +5,28 @@ export const metadata = { title: "Terms" };
 /** TEMPLATE — see the banner. Complete before operating publicly. */
 export default function TermsPage() {
   return (
-    <div className="min-h-dvh bg-ink-950">
-      <header className="border-b border-ink-800">
+    <div className="min-h-dvh bg-ink-50">
+      <header className="border-b border-ink-200">
         <div className="mx-auto max-w-3xl px-5 py-4">
-          <Link href="/" className="text-sm text-ink-400 hover:text-ink-200">
+          <Link href="/" className="text-sm text-ink-600 hover:text-ink-900">
             ← Home
           </Link>
         </div>
       </header>
 
       <main id="main" className="mx-auto max-w-3xl px-5 py-10">
-        <div className="mb-8 rounded-lg border border-amber-800 bg-amber-950/50 px-4 py-3 text-sm text-amber-200">
+        <div className="mb-8 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
           <strong>Operator note:</strong> template. Replace the{" "}
-          <code className="rounded bg-black/30 px-1">[BRACKETED]</code> fields,
+          <code className="rounded bg-ink-100 px-1">[BRACKETED]</code> fields,
           have it reviewed if you are charging money, and delete this banner.
         </div>
 
-        <h1 className="text-3xl font-bold text-white">Terms of use</h1>
+        <h1 className="text-3xl font-bold text-ink-900">Terms of use</h1>
         <p className="mt-2 text-sm text-ink-500">Last updated: [DATE]</p>
 
-        <div className="mt-8 space-y-8 text-ink-300">
+        <div className="mt-8 space-y-8 text-ink-700">
           <section>
-            <h2 className="text-xl font-semibold text-white">The basics</h2>
+            <h2 className="text-xl font-semibold text-ink-900">The basics</h2>
             <p className="mt-2 leading-relaxed">
               This service is provided by [LEGAL ENTITY NAME]. By creating an
               account or joining a game you agree to these terms. You must be
@@ -36,7 +36,7 @@ export default function TermsPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-white">Your content</h2>
+            <h2 className="text-xl font-semibold text-ink-900">Your content</h2>
             <p className="mt-2 leading-relaxed">
               You keep ownership of the quizzes and questions you write. You give
               us only the permission needed to store and display them to the
@@ -47,7 +47,7 @@ export default function TermsPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-white">Acceptable use</h2>
+            <h2 className="text-xl font-semibold text-ink-900">Acceptable use</h2>
             <p className="mt-2 leading-relaxed">Do not use this service to:</p>
             <ul className="mt-3 space-y-1.5 pl-5">
               <li className="list-disc">
@@ -72,7 +72,7 @@ export default function TermsPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-white">
+            <h2 className="text-xl font-semibold text-ink-900">
               AI-generated questions
             </h2>
             <p className="mt-2 leading-relaxed">
@@ -84,7 +84,7 @@ export default function TermsPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-white">
+            <h2 className="text-xl font-semibold text-ink-900">
               Availability and liability
             </h2>
             <p className="mt-2 leading-relaxed">
@@ -98,7 +98,7 @@ export default function TermsPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-white">Ending it</h2>
+            <h2 className="text-xl font-semibold text-ink-900">Ending it</h2>
             <p className="mt-2 leading-relaxed">
               You can delete your account at any time from Settings. We may
               suspend accounts that breach these terms. These terms are governed
@@ -107,7 +107,7 @@ export default function TermsPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-white">The software</h2>
+            <h2 className="text-xl font-semibold text-ink-900">The software</h2>
             <p className="mt-2 leading-relaxed">
               Quizzly is open-source software under the MIT licence. The licence
               covers the code; these terms cover this hosted instance of it.

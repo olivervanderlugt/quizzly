@@ -298,7 +298,7 @@ export function EditorClient({
   return (
     <div>
       {/* ── Tabs ── */}
-      <div className="mb-6 flex items-center border-b border-ink-800">
+      <div className="mb-6 flex items-center border-b border-ink-200">
         <div role="tablist" className="flex flex-1 gap-1">
           {TABS.map((item) => (
             <button
@@ -311,8 +311,8 @@ export function EditorClient({
               }}
               className={`-mb-px border-b-2 px-4 py-2.5 text-sm font-medium transition-colors ${
                 tab === item.id
-                  ? "border-brand-500 text-white"
-                  : "border-transparent text-ink-400 hover:text-ink-200"
+                  ? "border-brand-500 text-ink-900"
+                  : "border-transparent text-ink-600 hover:text-ink-900"
               }`}
             >
               {item.label}
@@ -323,7 +323,7 @@ export function EditorClient({
           <span
             role="status"
             className={`hidden pb-1 text-xs sm:inline ${
-              saveStatus === "error" ? "text-red-400" : "text-ink-500"
+              saveStatus === "error" ? "text-red-600" : "text-ink-500"
             }`}
           >
             {autosaveLabel(saveStatus)}
@@ -345,10 +345,10 @@ export function EditorClient({
                     className={`app-card min-w-0 flex-1 px-3 py-2.5 text-left ${
                       selectedId === question.id
                         ? "border-brand-600"
-                        : "hover:border-ink-700"
+                        : "hover:border-ink-400"
                     }`}
                   >
-                    <span className="block truncate text-sm font-medium text-white">
+                    <span className="block truncate text-sm font-medium text-ink-900">
                       {index + 1}. {question.prompt || "Untitled question"}
                     </span>
                     <span className="text-xs text-ink-500">
@@ -392,13 +392,13 @@ export function EditorClient({
                         <button
                           type="button"
                           onClick={() => addQuestion(type.id)}
-                          className="flex w-full items-start gap-2 rounded px-2 py-2 text-left hover:bg-ink-800"
+                          className="flex w-full items-start gap-2 rounded px-2 py-2 text-left hover:bg-ink-100"
                         >
-                          <span aria-hidden className="text-brand-400">
+                          <span aria-hidden className="text-brand-600">
                             {type.icon}
                           </span>
                           <span>
-                            <span className="block text-sm font-medium text-white">
+                            <span className="block text-sm font-medium text-ink-900">
                               {type.label}
                             </span>
                             <span className="block text-xs text-ink-500">
@@ -445,7 +445,7 @@ export function EditorClient({
                 uploadQuizId={quizId}
               />
             ) : (
-              <p className="py-16 text-center text-ink-400">
+              <p className="py-16 text-center text-ink-600">
                 {questions.length === 0
                   ? "Add your first question to get started."
                   : "Pick a question from the list."}

@@ -187,7 +187,7 @@ export function QuestionEditor({
           type="button"
           onClick={() => setShowLayout((v) => !v)}
           aria-expanded={showLayout}
-          className="text-sm font-medium text-brand-400 hover:underline"
+          className="text-sm font-medium text-brand-600 hover:underline"
         >
           {showLayout ? "Hide" : "Show"} layout &amp; image options
         </button>
@@ -205,7 +205,7 @@ export function QuestionEditor({
       {error ? (
         <p
           role="alert"
-          className="rounded-lg border border-red-900 bg-red-950/60 px-3 py-2 text-sm text-red-300"
+          className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
         >
           {error}
         </p>
@@ -213,7 +213,7 @@ export function QuestionEditor({
       {message ? (
         <p
           role="status"
-          className="rounded-lg border border-emerald-900 bg-emerald-950/50 px-3 py-2 text-sm text-emerald-300"
+          className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800"
         >
           {message}
         </p>
@@ -232,7 +232,7 @@ export function QuestionEditor({
           <button
             type="button"
             onClick={onDelete}
-            className="btn btn-ghost text-red-400"
+            className="btn btn-ghost text-red-600"
           >
             Delete
           </button>
@@ -476,7 +476,7 @@ function PayloadEditor({
                         })
                       }
                       aria-label={`Remove item ${index + 1}`}
-                      className="btn btn-ghost px-3 text-red-400"
+                      className="btn btn-ghost px-3 text-red-600"
                     >
                       ×
                     </button>
@@ -554,7 +554,7 @@ function PayloadEditor({
                       })
                     }
                     aria-label={`Remove pair ${index + 1}`}
-                    className="btn btn-ghost px-3 text-red-400"
+                    className="btn btn-ghost px-3 text-red-600"
                   >
                     ×
                   </button>
@@ -666,7 +666,7 @@ function OptionList({
                   }
                 }}
                 aria-label={`Option ${index + 1} is correct`}
-                className="h-5 w-5 shrink-0 accent-brand-500"
+                className="h-5 w-5 shrink-0 accent-brand-600"
               />
             ) : null}
 
@@ -692,7 +692,7 @@ function OptionList({
                   onOptionsChange(options.filter((o) => o.id !== option.id))
                 }
                 aria-label={`Remove option ${index + 1}`}
-                className="btn btn-ghost px-3 text-red-400"
+                className="btn btn-ghost px-3 text-red-600"
               >
                 ×
               </button>
@@ -731,7 +731,7 @@ function LayoutEditor({
     presentation.layout === "mediaTop";
 
   return (
-    <div className="mt-3 space-y-4 rounded-lg border border-ink-800 p-4">
+    <div className="mt-3 space-y-4 rounded-lg border border-ink-200 p-4">
       <div>
         <label className="app-label" htmlFor="layout">
           Layout
@@ -767,7 +767,7 @@ function LayoutEditor({
       {presentation.media ? (
         <div>
           <label className="app-label" htmlFor="media-alt">
-            Describe the image <span className="text-red-400">*</span>
+            Describe the image <span className="text-red-600">*</span>
           </label>
           <input
             id="media-alt"
@@ -813,10 +813,10 @@ function Toggle({
         type="checkbox"
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
-        className="mt-0.5 h-5 w-5 shrink-0 accent-brand-500"
+        className="mt-0.5 h-5 w-5 shrink-0 accent-brand-600"
       />
       <span>
-        <span className="text-sm font-medium text-ink-200">{label}</span>
+        <span className="text-sm font-medium text-ink-700">{label}</span>
         {hint ? <span className="block text-xs text-ink-500">{hint}</span> : null}
       </span>
     </label>

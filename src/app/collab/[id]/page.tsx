@@ -43,19 +43,19 @@ export default async function CollabManagePage({
     progress.contributors.length > 0 && progress.contributors.every((c) => c.done);
 
   return (
-    <div className="min-h-dvh bg-ink-950">
-      <header className="border-b border-ink-800">
+    <div className="min-h-dvh bg-ink-50">
+      <header className="border-b border-ink-200">
         <div className="mx-auto flex max-w-4xl items-center justify-between px-5 py-4">
-          <Link href="/dashboard" className="text-sm text-ink-400 hover:text-ink-200">
+          <Link href="/dashboard" className="text-sm text-ink-600 hover:text-ink-900">
             ← Dashboard
           </Link>
-          <span className="text-sm text-ink-400">Group quiz</span>
+          <span className="text-sm text-ink-600">Group quiz</span>
         </div>
       </header>
 
       <main id="main" className="mx-auto max-w-4xl px-5 py-8">
-        <h1 className="text-2xl font-bold text-white">{progress.quiz.title}</h1>
-        <p className="mt-1 text-ink-400">
+        <h1 className="text-2xl font-bold text-ink-900">{progress.quiz.title}</h1>
+        <p className="mt-1 text-ink-600">
           {progress.totalQuestions} question
           {progress.totalQuestions === 1 ? "" : "s"} submitted by{" "}
           {progress.contributors.length} contributor
@@ -64,8 +64,8 @@ export default async function CollabManagePage({
 
         {/* ── Invite ── */}
         <section className="app-card mt-6 p-5">
-          <h2 className="font-semibold text-white">Invite code</h2>
-          <p className="mt-1 text-sm text-ink-400">
+          <h2 className="font-semibold text-ink-900">Invite code</h2>
+          <p className="mt-1 text-sm text-ink-600">
             Anyone with this code and an account can contribute.
           </p>
           <CopyableCode
@@ -75,11 +75,11 @@ export default async function CollabManagePage({
         </section>
 
         {/* ── The promise ── */}
-        <section className="mt-6 rounded-xl border border-brand-800 bg-brand-950/40 p-5">
-          <h2 className="font-semibold text-brand-200">
+        <section className="mt-6 rounded-xl border border-brand-200 bg-brand-50 p-5">
+          <h2 className="font-semibold text-brand-700">
             What contributors have been told
           </h2>
-          <ul className="mt-2 space-y-1.5 text-sm leading-relaxed text-ink-300">
+          <ul className="mt-2 space-y-1.5 text-sm leading-relaxed text-ink-700">
             <li>• Nobody can read anyone else&apos;s questions before the game.</li>
             <li>
               • That includes you. This page deliberately shows counts, not
@@ -92,7 +92,7 @@ export default async function CollabManagePage({
           </ul>
 
           {progress.quiz.ownerReviewedAt ? (
-            <p className="mt-3 rounded-lg border border-amber-800 bg-amber-950/50 px-3 py-2 text-sm text-amber-200">
+            <p className="mt-3 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-800">
               You reviewed the submissions on{" "}
               {progress.quiz.ownerReviewedAt.toLocaleDateString()}. Every
               contributor can see this.
@@ -102,7 +102,7 @@ export default async function CollabManagePage({
               If you need to check for anything inappropriate, you can{" "}
               <Link
                 href={`/collab/${id}/review`}
-                className="font-medium text-brand-400 underline"
+                className="font-medium text-brand-600 underline"
               >
                 review submissions
               </Link>
@@ -114,10 +114,10 @@ export default async function CollabManagePage({
 
         {/* ── Progress ── */}
         <section className="mt-6">
-          <h2 className="mb-3 font-semibold text-white">Who&apos;s contributed</h2>
+          <h2 className="mb-3 font-semibold text-ink-900">Who&apos;s contributed</h2>
 
           {progress.contributors.length === 0 ? (
-            <p className="app-card p-6 text-center text-ink-400">
+            <p className="app-card p-6 text-center text-ink-600">
               Nobody has joined yet. Share the code above.
             </p>
           ) : (
@@ -127,7 +127,7 @@ export default async function CollabManagePage({
                   key={contributor.userId}
                   className="app-card flex items-center gap-4 p-4"
                 >
-                  <span className="flex-1 font-medium text-white">
+                  <span className="flex-1 font-medium text-ink-900">
                     {contributor.displayName}
                   </span>
 
@@ -136,13 +136,13 @@ export default async function CollabManagePage({
                       <span
                         key={i}
                         className={`h-2.5 w-2.5 rounded-full ${
-                          i < contributor.submitted ? "bg-brand-500" : "bg-ink-700"
+                          i < contributor.submitted ? "bg-brand-500" : "bg-ink-300"
                         }`}
                       />
                     ))}
                   </span>
 
-                  <span className="numeric w-16 text-right text-sm text-ink-400">
+                  <span className="numeric w-16 text-right text-sm text-ink-600">
                     {contributor.submitted}/{contributor.quota}
                   </span>
                 </li>
@@ -165,7 +165,7 @@ export default async function CollabManagePage({
                   Close submissions
                 </button>
               </form>
-              <p className="text-sm text-ink-400">
+              <p className="text-sm text-ink-600">
                 {allDone
                   ? "Everyone's hit their quota — you're good to go."
                   : "You can host before everyone finishes; latecomers just won't be included."}
