@@ -5,6 +5,7 @@ import { useFormStatus } from "react-dom";
 
 import { saveAiKeyAction } from "@/app/actions/settings";
 import type { ActionState } from "@/app/actions/quiz";
+import { PasswordInput } from "@/components/PasswordInput";
 
 function Submit({ hasKey }: { hasKey: boolean }) {
   const { pending } = useFormStatus();
@@ -32,14 +33,13 @@ export function AiKeyForm({ hasKey }: { hasKey: boolean }) {
       <label className="app-label" htmlFor="apiKey">
         Anthropic API key
       </label>
-      <input
+      <PasswordInput
         id="apiKey"
         name="apiKey"
-        type="password"
         autoComplete="off"
         spellCheck={false}
         placeholder={hasKey ? "Enter a new key, or leave blank to remove" : "sk-ant-…"}
-        className="app-input font-mono text-sm"
+        className="font-mono text-sm"
       />
 
       {state.error ? (
