@@ -207,7 +207,7 @@ body {
 }
 
 .app-input::placeholder {
-  color: var(--color-ink-500);
+  color: var(--color-ink-400);
 }
 
 .app-input:focus {
