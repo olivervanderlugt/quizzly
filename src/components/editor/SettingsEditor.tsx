@@ -90,7 +90,7 @@ export function SettingsEditor({
               className="h-24 w-40 rounded-lg border border-ink-800 object-cover"
             />
           ) : (
-            <div className="flex h-24 w-40 items-center justify-center rounded-lg border border-dashed border-ink-800 text-xs text-ink-500">
+            <div className="flex h-24 w-40 items-center justify-center rounded-lg border border-dashed border-ink-800 text-xs text-ink-400">
               No cover yet
             </div>
           )}
@@ -113,7 +113,7 @@ export function SettingsEditor({
               </button>
             ) : null}
             <UploadHint />
-            {coverPending ? <p className="text-xs text-ink-500">Saving…</p> : null}
+            {coverPending ? <p className="text-xs text-ink-400">Saving…</p> : null}
             {coverError ? (
               <p role="alert" className="mt-1 text-sm text-red-400">
                 {coverError}
@@ -141,7 +141,7 @@ export function SettingsEditor({
               onChange={setPublic}
             />
             {visibilityPending ? (
-              <p className="text-xs text-ink-500">Updating…</p>
+              <p className="text-xs text-ink-400">Updating…</p>
             ) : null}
             {visibilityError ? (
               <p role="alert" className="text-sm text-red-400">
@@ -181,7 +181,7 @@ export function SettingsEditor({
                 }
                 className="w-full"
               />
-              <p className="mt-1 text-xs text-ink-500">
+              <p className="mt-1 text-xs text-ink-400">
                 Keep this above zero — if the last seconds are worth nothing,
                 players stop trying once they&apos;ve hesitated.
               </p>
@@ -219,7 +219,7 @@ export function SettingsEditor({
                 onChange={(e) => patchScoring({ streakCap: Number(e.target.value) })}
                 className="app-input"
               />
-              <p className="mt-1 text-xs text-ink-500">
+              <p className="mt-1 text-xs text-ink-400">
                 Stops an early leader running away with it.
               </p>
             </div>
@@ -303,7 +303,7 @@ export function SettingsEditor({
       ) : null}
       <p
         role="status"
-        className={`text-xs ${status === "error" ? "text-red-400" : "text-ink-500"}`}
+        className={`text-xs ${status === "error" ? "text-red-400" : "text-ink-400"}`}
       >
         {autosaveLabel(status)}
       </p>
@@ -332,7 +332,7 @@ function Check({
       />
       <span>
         <span className="text-sm font-medium text-ink-200">{label}</span>
-        {hint ? <span className="block text-xs text-ink-500">{hint}</span> : null}
+        {hint ? <span className="block text-xs text-ink-400">{hint}</span> : null}
       </span>
     </label>
   );

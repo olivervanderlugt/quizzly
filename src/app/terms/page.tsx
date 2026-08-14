@@ -22,7 +22,7 @@ export default function TermsPage() {
         </div>
 
         <h1 className="text-3xl font-bold text-white">Terms of use</h1>
-        <p className="mt-2 text-sm text-ink-500">Last updated: [DATE]</p>
+        <p className="mt-2 text-sm text-ink-400">Last updated: [DATE]</p>
 
         <div className="mt-8 space-y-8 text-ink-300">
           <section>

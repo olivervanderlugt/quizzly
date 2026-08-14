@@ -104,7 +104,7 @@ export function ThemeEditor({
                   </option>
                 ))}
               </select>
-              <p className="mt-1 text-xs text-ink-500">
+              <p className="mt-1 text-xs text-ink-400">
                 All system fonts — nothing is downloaded, so nothing is tracked.
               </p>
             </div>
@@ -139,7 +139,7 @@ export function ThemeEditor({
             />
             <span className="text-sm text-ink-200">
               Animations
-              <span className="block text-xs text-ink-500">
+              <span className="block text-xs text-ink-400">
                 Always overridden by the player&apos;s reduce-motion setting.
               </span>
             </span>
@@ -218,7 +218,7 @@ export function ThemeEditor({
         ) : null}
         <p
           role="status"
-          className={`text-xs ${status === "error" ? "text-red-400" : "text-ink-500"}`}
+          className={`text-xs ${status === "error" ? "text-red-400" : "text-ink-400"}`}
         >
           {autosaveLabel(status)}
         </p>

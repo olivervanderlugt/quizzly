@@ -46,7 +46,7 @@ export default async function LoginPage({
             Create one
           </Link>
         </p>
-        <p className="mt-2 text-center text-sm text-ink-500">
+        <p className="mt-2 text-center text-sm text-ink-400">
           Just here to play?{" "}
           <Link href="/" className="font-medium text-ink-300 hover:underline">
             Join with a PIN

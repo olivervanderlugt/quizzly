@@ -98,7 +98,7 @@ export default async function CollabManagePage({
               contributor can see this.
             </p>
           ) : (
-            <p className="mt-3 text-sm text-ink-500">
+            <p className="mt-3 text-sm text-ink-400">
               If you need to check for anything inappropriate, you can{" "}
               <Link
                 href={`/collab/${id}/review`}

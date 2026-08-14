@@ -323,7 +323,7 @@ export function EditorClient({
           <span
             role="status"
             className={`hidden pb-1 text-xs sm:inline ${
-              saveStatus === "error" ? "text-red-400" : "text-ink-500"
+              saveStatus === "error" ? "text-red-400" : "text-ink-400"
             }`}
           >
             {autosaveLabel(saveStatus)}
@@ -351,7 +351,7 @@ export function EditorClient({
                     <span className="block truncate text-sm font-medium text-white">
                       {index + 1}. {question.prompt || "Untitled question"}
                     </span>
-                    <span className="text-xs text-ink-500">
+                    <span className="text-xs text-ink-400">
                       {question.payload.type.replace(/_/g, " ").toLowerCase()}
                     </span>
                   </button>
@@ -383,7 +383,7 @@ export function EditorClient({
             <div className="mt-3">
               {showTypePicker ? (
                 <div className="app-card p-2">
-                  <p className="px-2 pb-2 pt-1 text-xs font-semibold uppercase tracking-wide text-ink-500">
+                  <p className="px-2 pb-2 pt-1 text-xs font-semibold uppercase tracking-wide text-ink-400">
                     Pick a type
                   </p>
                   <ul className="max-h-80 overflow-y-auto">
@@ -401,7 +401,7 @@ export function EditorClient({
                             <span className="block text-sm font-medium text-white">
                               {type.label}
                             </span>
-                            <span className="block text-xs text-ink-500">
+                            <span className="block text-xs text-ink-400">
                               {type.blurb}
                             </span>
                           </span>

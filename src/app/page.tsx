@@ -122,7 +122,7 @@ export default async function LandingPage() {
               ))}
             </ol>
 
-            <p className="mt-6 max-w-2xl text-sm leading-relaxed text-ink-500">
+            <p className="mt-6 max-w-2xl text-sm leading-relaxed text-ink-400">
               The privacy rule is enforced in the database layer, not just hidden
               in the interface. If the host uses the moderation option to check
               submissions for anything abusive, every contributor is told it
@@ -212,7 +212,7 @@ export default async function LandingPage() {
               written strictly from it. Everything lands in the editor as a
               draft — you review and edit before anyone plays it.
             </p>
-            <p className="mt-4 text-sm text-ink-500">
+            <p className="mt-4 text-sm text-ink-400">
               {aiConfigured
                 ? "AI generation is enabled on this server."
                 : "AI generation isn't configured on this server yet — everything else works without it. An administrator can switch it on by setting ANTHROPIC_API_KEY."}
@@ -222,7 +222,7 @@ export default async function LandingPage() {
       </main>
 
       <footer className="border-t border-ink-800">
-        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-8 text-sm text-ink-500 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-8 text-sm text-ink-400 sm:flex-row sm:items-center sm:justify-between">
           <p>Quizzly — self-hosted, MIT licensed.</p>
           <nav className="flex gap-4">
             <Link href="/privacy" className="hover:text-ink-300">
