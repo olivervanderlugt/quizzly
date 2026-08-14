@@ -38,6 +38,14 @@ const schema = z.object({
 
   REDIS_URL: z.string().optional(),
 
+  /**
+   * Directory uploaded images are written to. Must live outside the repo and
+   * outside the container's writable layer — `docker-compose.yml` mounts a
+   * named volume at `/data/uploads` for exactly this. The relative default
+   * keeps `npm run dev` working with no configuration; it is gitignored.
+   */
+  MEDIA_UPLOAD_DIR: z.string().min(1).default("./.uploads"),
+
   MAX_PLAYERS_PER_GAME: z.coerce.number().int().positive().max(10_000).default(500),
   MAX_QUESTIONS_PER_QUIZ: z.coerce.number().int().positive().max(500).default(100),
 });

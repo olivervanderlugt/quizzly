@@ -15,3 +15,4 @@ Dockerfile
 docker-compose.yml
 postgres-data
 *.tsbuildinfo
+.uploads

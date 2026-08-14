@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { mediaReferenceSchema } from "./media/ref";
+
 /**
  * The theming system.
  *
@@ -440,8 +442,13 @@ export const presentationSchema = z.object({
   layout: z
     .enum(Object.keys(LAYOUTS) as [LayoutId, ...LayoutId[]])
     .default("classic"),
-  /** Image shown with the question. */
-  media: z.string().url().max(2000).optional(),
+  /**
+   * Image shown with the question: either an absolute URL the author pasted or
+   * a path to an image uploaded to this server. `mediaReferenceSchema` is the
+   * only thing that changed when uploads arrived — hot-linked URLs still
+   * validate exactly as they did.
+   */
+  media: mediaReferenceSchema.optional(),
   /** Alt text — required whenever media is set, checked in `validatePresentation`. */
   mediaAlt: z.string().trim().max(300).optional(),
   /** Overrides the theme accent for this one question. */

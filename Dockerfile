@@ -52,6 +52,13 @@ RUN apk add --no-cache libc6-compat wget && \
     addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 quizzly
 
+# Uploaded quiz images. Created here, owned by the app user, *before* the
+# volume is mounted over it: Docker seeds a fresh named volume from whatever
+# the image has at that path, ownership included. Without this the volume
+# arrives owned by root and the unprivileged process cannot write a byte.
+ENV MEDIA_UPLOAD_DIR=/data/uploads
+RUN mkdir -p /data/uploads && chown -R quizzly:nodejs /data
+
 # The whole built tree, node_modules and its .bin symlinks included. Build
 # tooling never reaches this stage because the build ran in the previous one.
 COPY --from=builder --chown=quizzly:nodejs /app ./

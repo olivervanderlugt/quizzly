@@ -3,7 +3,12 @@
 import { useCallback, useState, useTransition } from "react";
 
 import type { QuizSettings } from "@/lib/scoring";
-import { updateSettingsAction, updateVisibilityAction } from "@/app/actions/quiz";
+import {
+  setCoverImageAction,
+  updateSettingsAction,
+  updateVisibilityAction,
+} from "@/app/actions/quiz";
+import { ImageUpload, UploadHint } from "./ImageUpload";
 import type { QuizVisibilityName } from "./EditorClient";
 import { autosaveLabel, useAutosave, useUnsavedChangesWarning } from "./useAutosave";
 
@@ -11,17 +16,35 @@ export function SettingsEditor({
   quizId,
   initialSettings,
   initialVisibility,
+  initialCoverImage,
   mode,
 }: {
   quizId: string;
   initialSettings: QuizSettings;
   initialVisibility: QuizVisibilityName;
+  initialCoverImage: string | null;
   mode: "SOLO" | "COLLAB";
 }) {
   const [settings, setSettings] = useState(initialSettings);
   const [visibility, setVisibility] = useState(initialVisibility);
   const [visibilityError, setVisibilityError] = useState<string | null>(null);
   const [visibilityPending, startVisibility] = useTransition();
+  const [coverImage, setCoverImage] = useState(initialCoverImage);
+  const [coverError, setCoverError] = useState<string | null>(null);
+  const [coverPending, startCover] = useTransition();
+
+  function saveCover(next: string) {
+    const previous = coverImage;
+    setCoverImage(next || null);
+    setCoverError(null);
+    startCover(async () => {
+      const result = await setCoverImageAction(quizId, next);
+      if (result.error) {
+        setCoverImage(previous);
+        setCoverError(result.error);
+      }
+    });
+  }
 
   const saveSettings = useCallback(
     (value: QuizSettings) => updateSettingsAction(quizId, value),
@@ -52,6 +75,54 @@ export function SettingsEditor({
 
   return (
     <div className="max-w-2xl space-y-6">
+      <section className="app-card p-5">
+        <h2 className="font-semibold text-white">Cover image</h2>
+        <p className="mt-1 text-sm text-ink-400">
+          Shown on your dashboard so a quiz is recognisable at a glance.
+        </p>
+
+        <div className="mt-4 flex flex-wrap items-start gap-4">
+          {coverImage ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={coverImage}
+              alt=""
+              className="h-24 w-40 rounded-lg border border-ink-800 object-cover"
+            />
+          ) : (
+            <div className="flex h-24 w-40 items-center justify-center rounded-lg border border-dashed border-ink-800 text-xs text-ink-500">
+              No cover yet
+            </div>
+          )}
+
+          <div>
+            <ImageUpload
+              quizId={quizId}
+              label={coverImage ? "Replace cover" : "Upload a cover"}
+              onUploaded={saveCover}
+              disabled={coverPending}
+            />
+            {coverImage ? (
+              <button
+                type="button"
+                className="btn btn-ghost mt-2 text-sm"
+                disabled={coverPending}
+                onClick={() => saveCover("")}
+              >
+                Remove cover
+              </button>
+            ) : null}
+            <UploadHint />
+            {coverPending ? <p className="text-xs text-ink-500">Saving…</p> : null}
+            {coverError ? (
+              <p role="alert" className="mt-1 text-sm text-red-400">
+                {coverError}
+              </p>
+            ) : null}
+          </div>
+        </div>
+      </section>
+
       <section className="app-card p-5">
         <h2 className="font-semibold text-white">Sharing</h2>
 

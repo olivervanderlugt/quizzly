@@ -28,6 +28,7 @@ export default async function EditQuizPage({
       ownerId: true,
       title: true,
       description: true,
+      coverImage: true,
       theme: true,
       settings: true,
       mode: true,
@@ -88,6 +89,7 @@ export default async function EditQuizPage({
           initialTheme={themeSchema.parse(quiz.theme)}
           initialSettings={quizSettingsSchema.parse(quiz.settings)}
           initialVisibility={quiz.visibility}
+          initialCoverImage={quiz.coverImage}
           mode={quiz.mode}
           ai={ai}
         />
