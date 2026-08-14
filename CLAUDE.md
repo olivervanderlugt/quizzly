@@ -90,6 +90,20 @@ mid-game must not change the game in progress.
 backstop.** It is not decoration — it is what makes a duplicate submission
 impossible even if the application-layer check is bypassed. Do not relax it.
 
+**Uploaded images are re-encoded, never passed through.** `processImageUpload()`
+in `src/lib/media/image.ts` sniffs magic bytes (the filename and `Content-Type`
+are attacker-controlled and ignored), caps the size, and re-encodes to WebP —
+which is *how* EXIF is stripped, so do not add `.withMetadata()` to that
+pipeline and do not add a "just store the original" fast path. SVG stays off the
+allowlist: we serve these same-origin, and an SVG can carry script.
+`src/lib/media/ref.ts` is the client-safe half (limits, URL shape,
+`mediaReferenceSchema`); it must never import sharp, `fs` or env.
+
+**A media key's regex is the traversal defence.** `resolveKey()` in
+`src/lib/media/storage.ts` is the single place a caller-supplied string becomes
+a path, and it rejects anything that isn't 32 hex characters plus `.webp`.
+Widen that pattern and you widen the filesystem surface.
+
 **`src/lib/auth.ts` is `server-only`.** The plain-Node Socket.IO server cannot
 import it. That is why `src/lib/session-cookie.ts` exists and holds nothing but
 the cookie name. If the Socket.IO server needs something from auth, extract it

@@ -124,10 +124,37 @@ essentials:
 | `ENCRYPTION_KEY` | yes | `openssl rand -base64 32`. Encrypts stored user API keys |
 | `ANTHROPIC_API_KEY` | no | Switches on AI drafting. Everything else works without it |
 | `AI_MODEL` | no | Defaults to `claude-opus-5` |
+| `MEDIA_UPLOAD_DIR` | no | Where uploaded images are written. Defaults to `./.uploads`; compose mounts a volume at `/data/uploads` |
 
 The app validates all of this at boot and **refuses to start** if something is
 missing or still set to a placeholder. A container that won't start is a much
 better failure than one that starts and is quietly insecure.
+
+### Images on questions and quiz covers
+
+A question's image can be a URL you paste — hot-linked from wherever it already
+lives, exactly as before — or a file you upload in the editor. A quiz's cover
+image works the same way, under **Game rules → Cover image**. Uploads are for
+the quiz's owner; contributors to a group quiz keep the URL field.
+
+What an upload is allowed to be, all enforced server-side in
+`src/lib/media/`:
+
+| | |
+|---|---|
+| Maximum size | **5 MB** per image |
+| Accepted formats | **JPEG, PNG, WebP** — decided by sniffing the file's magic bytes, never its name or the browser's `Content-Type` |
+| Rejected on purpose | **SVG** (it can carry script and we serve it same-origin), **GIF** (re-encoding drops the animation), everything else |
+| Stored as | WebP, longest edge capped at **2000 px** |
+| Metadata | **EXIF is stripped**, including the GPS coordinates a phone camera embeds. Orientation is applied first, so portrait photos stay upright |
+| Stored where | `MEDIA_UPLOAD_DIR` — a Docker volume mounted at `/data/uploads`, outside the repo and outside the container's writable layer |
+| Served from | `/api/media/<random>.webp` on this origin, so no third party learns your players' IP addresses |
+| Rate limit | 100 uploads per user per hour |
+
+The serving URL carries 128 bits of randomness and needs no login: anyone with
+the link can view the image, which is the same bargain as a pasted URL. Removing
+an image from a question does not delete the file — there is no garbage
+collection yet, so a long-lived install accumulates orphans on the volume.
 
 ### Turning on AI later
 

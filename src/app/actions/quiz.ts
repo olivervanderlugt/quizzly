@@ -22,6 +22,7 @@ import {
   themeSchema,
   validatePresentation,
 } from "@/lib/theme";
+import { mediaReferenceSchema } from "@/lib/media/ref";
 import { DEFAULT_SETTINGS, quizSettingsSchema } from "@/lib/scoring";
 import { createCollabQuiz } from "@/lib/collab";
 import { parseQuizTransfer } from "@/lib/quiz-transfer";
@@ -153,6 +154,33 @@ export async function updateQuizMetaAction(
 
   revalidatePath(`/quiz/${quizId}/edit`);
   return { ok: true, message: "Saved." };
+}
+
+/**
+ * A cover image is either one reference or none — the empty string is how the
+ * editor says "remove it", since a form control has no way to send undefined.
+ */
+const coverImageSchema = z.union([mediaReferenceSchema, z.literal("")]);
+
+export async function setCoverImageAction(
+  quizId: string,
+  rawCoverImage: unknown,
+): Promise<ActionState> {
+  const user = await requireUser();
+  const quiz = await ownedQuiz(quizId, user.id);
+  if (!quiz) return { error: "Quiz not found." };
+
+  const parsed = coverImageSchema.safeParse(rawCoverImage);
+  if (!parsed.success) return { error: "That isn't a usable image." };
+
+  await db.quiz.update({
+    where: { id: quizId },
+    data: { coverImage: parsed.data || null },
+  });
+
+  revalidatePath(`/quiz/${quizId}/edit`);
+  revalidatePath("/dashboard");
+  return { ok: true, message: parsed.data ? "Cover image updated." : "Cover image removed." };
 }
 
 export async function updateThemeAction(

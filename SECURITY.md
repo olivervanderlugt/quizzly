@@ -84,6 +84,29 @@ Following the OWASP WebSocket guidance:
   through schemas on read *and* write, so "JSON column" never means "unvalidated
   column".
 
+### Uploaded images
+An upload endpoint is a classic way into a server, so `src/lib/media/` trusts
+none of what the uploader controls:
+- The type is decided by **sniffing magic bytes**, never the filename or the
+  `Content-Type` header. Only JPEG, PNG and WebP pass. **SVG is refused** — it
+  is a scriptable document and we serve these same-origin, which would make it
+  stored XSS.
+- The size is capped at **5 MB server-side**, on the actual bytes rather than on
+  the declared `Content-Length`, and decoding is capped at 50 megapixels so a
+  small file cannot expand into an enormous bitmap.
+- Every accepted image is **re-encoded from decoded pixels to WebP**, which is
+  what strips EXIF: no metadata is carried across at all, so a phone photo's GPS
+  coordinates never reach the volume. Nothing is ever served back in the
+  container it arrived in.
+- Writes require the **quiz's owner**, checked per request like every other
+  mutation, and the endpoint compares `Origin` against `APP_ORIGIN` because a
+  cookie-authenticated multipart POST is otherwise forgeable cross-site.
+- Files are written under a **random 128-bit key**, and the key pattern (hex
+  plus one known extension) is validated before it can become a path, so
+  traversal is rejected rather than sanitised.
+- Uploads are rate limited per user, and stored outside the repo on a mounted
+  volume.
+
 ### Secrets
 - Env vars validated at boot; the app **refuses to start** on anything missing or
   still set to a placeholder, and refuses to serve production over plain HTTP.
@@ -132,17 +155,28 @@ Be aware of these before deploying at scale.
 6. **No account lockout, only rate limiting.** A distributed attacker with many
    IPs is throttled per-email but not locked out.
 
-7. **Quiz images are hot-linked from arbitrary HTTPS URLs.** They aren't
-   proxied, so a question image discloses players' IPs to that third-party host.
-   `img-src https:` is permissive by necessity. Proxy images if this matters.
+7. **A pasted image URL is still hot-linked.** Uploaded images are served from
+   this origin and leak nothing, but an author can also paste an arbitrary
+   HTTPS URL, and those aren't proxied — the question image then discloses
+   every player's IP to that third-party host. `img-src https:` is permissive
+   by necessity for that route. Uploading rather than pasting avoids it
+   entirely; proxying the pasted ones is still unbuilt.
 
-8. **`style-src` allows `'unsafe-inline'`.** React inlines the style attributes
+8. **An uploaded image is readable by anyone holding its link.** The URL carries
+   128 random bits, so it can't be guessed or enumerated, but there is no
+   per-viewer check on the way out — players are anonymous mid-game and have no
+   session to check. Treat an uploaded image as public-if-linked, exactly like a
+   pasted URL. Removing it from a question does not delete the file either:
+   nothing garbage-collects the volume yet, so orphans accumulate and stay
+   readable at their old URLs.
+
+9. **`style-src` allows `'unsafe-inline'`.** React inlines the style attributes
    carrying theme variables, and there is no nonce mechanism for style
    *attributes*. A style attribute can't execute script, and every value that
    reaches one is a hex colour validated by `themeSchema`, so the residual risk
    is limited to appearance.
 
-9. **`npm audit` reports three high-severity advisories, all transitive through
+10. **`npm audit` reports three high-severity advisories, all transitive through
    `next`, none reachable in this configuration.** As of the last check:
 
    - **`postcss`** — arbitrary `.map` file disclosure and path traversal via an

@@ -50,6 +50,12 @@ services:
       AI_RATE_LIMIT_PER_HOUR: ${AI_RATE_LIMIT_PER_HOUR:-20}
       MAX_PLAYERS_PER_GAME: ${MAX_PLAYERS_PER_GAME:-500}
       MAX_QUESTIONS_PER_QUIZ: ${MAX_QUESTIONS_PER_QUIZ:-100}
+      # Uploaded quiz images. Must point at the mounted volume below: anywhere
+      # else and the pictures live in the container's writable layer, which the
+      # next `docker compose up --build` throws away.
+      MEDIA_UPLOAD_DIR: /data/uploads
+    volumes:
+      - media-uploads:/data/uploads
     ports:
       - "${PORT:-3000}:3000"
     # Apply migrations before serving. `migrate deploy` only ever applies
@@ -60,3 +66,7 @@ services:
 
 volumes:
   postgres-data:
+  # Quiz images uploaded by hosts. A named volume rather than a bind mount so
+  # it is portable, and outside the repo so nothing a user uploaded can end up
+  # in a commit or in the build context.
+  media-uploads:

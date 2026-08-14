@@ -69,6 +69,7 @@ export function EditorClient({
   initialTheme,
   initialSettings,
   initialVisibility,
+  initialCoverImage,
   mode,
   ai,
 }: {
@@ -79,6 +80,7 @@ export function EditorClient({
   initialTheme: Theme;
   initialSettings: QuizSettings;
   initialVisibility: QuizVisibilityName;
+  initialCoverImage: string | null;
   mode: "SOLO" | "COLLAB";
   ai: AiAvailability;
 }) {
@@ -432,6 +434,7 @@ export function EditorClient({
           <section className="app-card p-5">
             {selected ? (
               <QuestionEditor
+                quizId={quizId}
                 value={selected}
                 onChange={updateSelected}
                 onSave={save}
@@ -461,6 +464,7 @@ export function EditorClient({
           quizId={quizId}
           initialSettings={initialSettings}
           initialVisibility={initialVisibility}
+          initialCoverImage={initialCoverImage}
           mode={mode}
         />
       ) : null}

@@ -15,6 +15,7 @@ import {
   type LayoutId,
   type Presentation,
 } from "@/lib/theme";
+import { ImageUpload, UploadHint } from "./ImageUpload";
 
 /**
  * The question editor, shared by the quiz builder and the group-quiz
@@ -45,6 +46,12 @@ interface Props {
   message: string | null;
   /** Contributors submit; owners save. Only the wording differs. */
   saveLabel?: string;
+  /**
+   * The quiz the question belongs to. Present only when the person editing
+   * owns it, which is what unlocks image uploads — the upload endpoint accepts
+   * writes from the owner and nobody else.
+   */
+  quizId?: string;
 }
 
 export function QuestionEditor({
@@ -56,6 +63,7 @@ export function QuestionEditor({
   error,
   message,
   saveLabel = "Save question",
+  quizId,
 }: Props) {
   const [showLayout, setShowLayout] = useState(false);
   const meta = QUESTION_TYPE_MAP.get(value.payload.type);
@@ -189,6 +197,7 @@ export function QuestionEditor({
           <LayoutEditor
             presentation={value.presentation}
             onChange={(presentation) => patch({ presentation })}
+            quizId={quizId}
           />
         ) : null}
       </div>
@@ -711,9 +720,12 @@ function OptionList({
 function LayoutEditor({
   presentation,
   onChange,
+  quizId,
 }: {
   presentation: Presentation;
   onChange: (presentation: Presentation) => void;
+  /** Absent in the contribution flow, where the author isn't the quiz owner. */
+  quizId?: string;
 }) {
   const needsImage =
     presentation.layout === "banner" ||
@@ -759,6 +771,38 @@ function LayoutEditor({
           placeholder="https://…"
           className="app-input"
         />
+
+        {/* Uploading needs a quiz to own the file, which the group-quiz
+            contribution flow doesn't have — only the owner may write one.
+            Contributors keep the URL field, which is what they had before. */}
+        {quizId ? (
+          <div className="mt-2">
+            <ImageUpload
+              quizId={quizId}
+              label={presentation.media ? "Replace with an upload" : "…or upload an image"}
+              onUploaded={(url) => onChange({ ...presentation, media: url })}
+            />
+            <UploadHint />
+          </div>
+        ) : null}
+
+        {presentation.media ? (
+          <div className="mt-3 flex items-start gap-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={presentation.media}
+              alt=""
+              className="h-20 w-20 rounded-lg border border-ink-800 object-cover"
+            />
+            <button
+              type="button"
+              className="btn btn-ghost text-sm"
+              onClick={() => onChange({ ...presentation, media: undefined })}
+            >
+              Remove image
+            </button>
+          </div>
+        ) : null}
       </div>
 
       {presentation.media ? (
