@@ -8,6 +8,7 @@ import {
   signupAction,
   type FormState,
 } from "@/app/actions/auth";
+import { PasswordInput } from "@/components/PasswordInput";
 
 function SubmitButton({ label }: { label: string }) {
   // `useFormStatus` must be called from a component *inside* the form, which is
@@ -84,14 +85,12 @@ export function AuthForm({
         <label className="app-label" htmlFor="password">
           Password
         </label>
-        <input
+        <PasswordInput
           id="password"
           name="password"
-          type="password"
           required
           minLength={mode === "signup" ? 10 : undefined}
           autoComplete={mode === "signup" ? "new-password" : "current-password"}
-          className="app-input"
           placeholder={mode === "signup" ? "At least 10 characters" : "Your password"}
           aria-describedby={
             state.fieldErrors?.password
