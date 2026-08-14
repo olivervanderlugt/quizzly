@@ -40,8 +40,8 @@ services:
       PORT: 3000
       APP_ORIGIN: ${APP_ORIGIN:-http://localhost:3000}
       DATABASE_URL: postgresql://${POSTGRES_USER:-quizzly}:${POSTGRES_PASSWORD:-quizzly}@db:5432/${POSTGRES_DB:-quizzly}?schema=public
-      # Quoted because the error text contains ": " — unquoted, YAML reads that
-      # as a nested mapping and refuses to parse the whole file.
+      # Quoted because the error text contains ": " — unquoted, YAML reads
+      # that as a nested mapping and refuses the whole file.
       SESSION_SECRET: "${SESSION_SECRET:?set SESSION_SECRET in .env — generate with openssl rand -base64 32}"
       ENCRYPTION_KEY: "${ENCRYPTION_KEY:?set ENCRYPTION_KEY in .env — generate with openssl rand -base64 32}"
       # Optional — leave unset and the app runs fine without AI generation.

@@ -56,12 +56,21 @@ device clock skew.
 
 ```bash
 git clone https://github.com/olivervanderlugt/quizzly.git && cd quizzly
-cp .env.example .env
+# already cloned before? cd quizzly && git pull instead
+```
 
-# Generate the two required secrets
-sed -i "s|^SESSION_SECRET=.*|SESSION_SECRET=$(openssl rand -base64 32)|" .env
-sed -i "s|^ENCRYPTION_KEY=.*|ENCRYPTION_KEY=$(openssl rand -base64 32)|" .env
+Create `.env` with the two required secrets generated. This form works on both
+macOS and Linux — `sed -i` does not, its flags differ between the two:
 
+```bash
+grep -v '^SESSION_SECRET=\|^ENCRYPTION_KEY=' .env.example > .env
+printf 'SESSION_SECRET=%s\nENCRYPTION_KEY=%s\n' \
+  "$(openssl rand -base64 32)" "$(openssl rand -base64 32)" >> .env
+```
+
+Then, with Docker Desktop running:
+
+```bash
 docker compose up --build
 ```
 
