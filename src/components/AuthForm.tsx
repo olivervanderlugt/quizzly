@@ -102,7 +102,7 @@ export function AuthForm({
           }
         />
         {mode === "signup" && !state.fieldErrors?.password ? (
-          <p id="password-hint" className="mt-1.5 text-xs text-ink-500">
+          <p id="password-hint" className="mt-1.5 text-xs text-ink-400">
             A few random words is stronger and easier to remember than a short
             password full of symbols.
           </p>

@@ -104,7 +104,7 @@ export function QuestionEditor({
           ))}
         </select>
         {meta ? (
-          <p className="mt-1.5 text-xs text-ink-500">{meta.blurb}</p>
+          <p className="mt-1.5 text-xs text-ink-400">{meta.blurb}</p>
         ) : null}
       </div>
 
@@ -160,7 +160,7 @@ export function QuestionEditor({
             className="app-input"
           />
           {meta && !meta.scored ? (
-            <p className="mt-1 text-xs text-ink-500">
+            <p className="mt-1 text-xs text-ink-400">
               This type doesn&apos;t score points.
             </p>
           ) : null}
@@ -170,7 +170,7 @@ export function QuestionEditor({
       {/* ── Explanation ── */}
       <div>
         <label className="app-label" htmlFor="q-explanation">
-          Explanation <span className="font-normal text-ink-500">(optional)</span>
+          Explanation <span className="font-normal text-ink-400">(optional)</span>
         </label>
         <input
           id="q-explanation"
@@ -311,7 +311,7 @@ function PayloadEditor({
       return (
         <div>
           <label className="app-label">Accepted answers</label>
-          <p className="mb-2 text-xs text-ink-500">
+          <p className="mb-2 text-xs text-ink-400">
             One per line. Any of them counts as correct — add spellings and
             synonyms.
           </p>
@@ -342,7 +342,7 @@ function PayloadEditor({
                 }
                 className="w-full"
               />
-              <p className="mt-1 text-xs text-ink-500">
+              <p className="mt-1 text-xs text-ink-400">
                 0 is exact. 1 forgives a slip of the thumb.
               </p>
             </div>
@@ -439,7 +439,7 @@ function PayloadEditor({
       return (
         <div>
           <label className="app-label">Items, in the correct order</label>
-          <p className="mb-2 text-xs text-ink-500">
+          <p className="mb-2 text-xs text-ink-400">
             Players see them shuffled.
           </p>
           <div className="space-y-2">
@@ -448,7 +448,7 @@ function PayloadEditor({
               if (!item) return null;
               return (
                 <div key={id} className="flex items-center gap-2">
-                  <span className="numeric w-6 text-center text-sm text-ink-500">
+                  <span className="numeric w-6 text-center text-sm text-ink-400">
                     {index + 1}
                   </span>
                   <input
@@ -527,7 +527,7 @@ function PayloadEditor({
                   className="app-input"
                   aria-label={`Pair ${index + 1} left`}
                 />
-                <span aria-hidden className="text-ink-500">
+                <span aria-hidden className="text-ink-400">
                   →
                 </span>
                 <input
@@ -641,7 +641,7 @@ function OptionList({
       <label className="app-label">
         Answer options
         {!hideCorrect ? (
-          <span className="ml-1 font-normal text-ink-500">
+          <span className="ml-1 font-normal text-ink-400">
             — {multi ? "tick every correct one" : "tick the correct one"}
           </span>
         ) : null}
@@ -752,7 +752,7 @@ function LayoutEditor({
             </option>
           ))}
         </select>
-        <p className="mt-1.5 text-xs text-ink-500">
+        <p className="mt-1.5 text-xs text-ink-400">
           {LAYOUTS[presentation.layout].blurb}
         </p>
       </div>
@@ -820,7 +820,7 @@ function LayoutEditor({
             placeholder="A red double-decker bus on Westminster Bridge"
             className="app-input"
           />
-          <p className="mt-1 text-xs text-ink-500">
+          <p className="mt-1 text-xs text-ink-400">
             Required. Without it, players using a screen reader can&apos;t
             answer this question.
           </p>
@@ -858,7 +858,7 @@ function Toggle({
       />
       <span>
         <span className="text-sm font-medium text-ink-200">{label}</span>
-        {hint ? <span className="block text-xs text-ink-500">{hint}</span> : null}
+        {hint ? <span className="block text-xs text-ink-400">{hint}</span> : null}
       </span>
     </label>
   );

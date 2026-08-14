@@ -106,7 +106,7 @@ export function ImageUpload({
 /** One line of plain English about what an upload may be. Shown next to it. */
 export function UploadHint() {
   return (
-    <p className="mt-1 text-xs text-ink-500">
+    <p className="mt-1 text-xs text-ink-400">
       JPEG, PNG or WebP, up to {MAX_UPLOAD_LABEL}. Uploads are stored on this
       server, re-encoded, and stripped of camera metadata such as GPS location.
     </p>

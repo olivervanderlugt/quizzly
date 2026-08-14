@@ -49,7 +49,7 @@ export function AiPanel({
         <p className="mt-2 text-sm leading-relaxed text-ink-400">
           {availability.reason}
         </p>
-        <p className="mt-4 text-sm leading-relaxed text-ink-500">
+        <p className="mt-4 text-sm leading-relaxed text-ink-400">
           Everything else in Quizzly works without it — this panel is the only
           thing affected. To switch it on, set{" "}
           <code className="rounded bg-ink-950 px-1.5 py-0.5 font-mono text-xs">
@@ -118,7 +118,7 @@ export function AiPanel({
           <div>
             <label className="app-label" htmlFor="source">
               Source material{" "}
-              <span className="font-normal text-ink-500">(optional)</span>
+              <span className="font-normal text-ink-400">(optional)</span>
             </label>
             <textarea
               id="source"
@@ -128,7 +128,7 @@ export function AiPanel({
               placeholder="Paste your notes, an article, or a lesson plan. Questions will be written strictly from this and won't bring in outside facts."
               className="app-input resize-y text-sm"
             />
-            <p className="mt-1 text-xs text-ink-500">
+            <p className="mt-1 text-xs text-ink-400">
               {sourceText.length.toLocaleString()} / 20,000 characters
             </p>
           </div>
@@ -237,13 +237,13 @@ export function AiPanel({
         </button>
 
         {pending ? (
-          <p className="mt-2 text-xs text-ink-500">
+          <p className="mt-2 text-xs text-ink-400">
             This usually takes 15–40 seconds.
           </p>
         ) : null}
       </div>
 
-      <p className="text-xs leading-relaxed text-ink-500">
+      <p className="text-xs leading-relaxed text-ink-400">
         Generated questions are drafts. Check them for accuracy before you play —
         a confidently wrong question in front of a class is worse than no
         question at all.

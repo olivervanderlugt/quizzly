@@ -66,7 +66,7 @@ export default async function SettingsPage({
               : " This server has no key of its own, so AI drafting only works if you add one here."}
           </p>
           <AiKeyForm hasKey={Boolean(record?.encryptedAiKey)} />
-          <p className="mt-3 text-xs text-ink-500">
+          <p className="mt-3 text-xs text-ink-400">
             Stored encrypted (AES-256-GCM) and never shown again — not even to
             you. Replace it any time by saving a new one.
           </p>

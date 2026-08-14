@@ -87,14 +87,14 @@ export function ContributeClient({
                 key={question.id}
                 className="app-card flex items-center gap-3 p-4"
               >
-                <span className="numeric w-6 text-center text-sm text-ink-500">
+                <span className="numeric w-6 text-center text-sm text-ink-400">
                   {index + 1}
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block truncate font-medium text-white">
                     {question.prompt || "(no prompt)"}
                   </span>
-                  <span className="text-xs text-ink-500">{question.type}</span>
+                  <span className="text-xs text-ink-400">{question.type}</span>
                 </span>
                 {!locked ? (
                   <button

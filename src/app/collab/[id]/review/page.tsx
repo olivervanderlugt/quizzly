@@ -55,7 +55,7 @@ export default async function ReviewPage({
           {result.questions.map((question, index) => (
             <li key={question.id} className="app-card p-5">
               <div className="flex items-start gap-3">
-                <span className="numeric mt-0.5 w-6 text-center text-sm text-ink-500">
+                <span className="numeric mt-0.5 w-6 text-center text-sm text-ink-400">
                   {index + 1}
                 </span>
                 <div className="min-w-0 flex-1">
@@ -68,7 +68,7 @@ export default async function ReviewPage({
                       {describeCorrectAnswer(question.payload)}
                     </span>
                   </p>
-                  <p className="mt-1 text-xs text-ink-500">
+                  <p className="mt-1 text-xs text-ink-400">
                     {question.type}
                     {question.authorName ? ` · by ${question.authorName}` : ""}
                   </p>

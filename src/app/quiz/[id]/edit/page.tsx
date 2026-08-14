@@ -64,7 +64,7 @@ export default async function EditQuizPage({
           <span className="min-w-0 flex-1 truncate font-semibold text-white">
             {quiz.title}
           </span>
-          <span className="hidden text-sm text-ink-500 sm:inline">
+          <span className="hidden text-sm text-ink-400 sm:inline">
             {questions.length} question{questions.length === 1 ? "" : "s"}
           </span>
           <form action={startGameAction}>

@@ -138,7 +138,7 @@ export default async function DiscoverPage({
                         {quiz.description}
                       </p>
                     ) : null}
-                    <p className="mt-1 text-sm text-ink-500">
+                    <p className="mt-1 text-sm text-ink-400">
                       {quiz._count.questions} question
                       {quiz._count.questions === 1 ? "" : "s"} · by{" "}
                       {quiz.owner.displayName}

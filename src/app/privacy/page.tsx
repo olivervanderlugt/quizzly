@@ -32,7 +32,7 @@ export default function PrivacyPage() {
         </div>
 
         <h1 className="text-3xl font-bold text-white">Privacy notice</h1>
-        <p className="mt-2 text-sm text-ink-500">
+        <p className="mt-2 text-sm text-ink-400">
           Last updated: [DATE]
         </p>
 
