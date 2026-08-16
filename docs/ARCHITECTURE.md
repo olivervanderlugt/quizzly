@@ -71,6 +71,13 @@ stripped out. Grading happens server-side. This is architectural rather than a
 discipline that could be forgotten: the type simply has no field to leak, and
 `question-schema.test.ts` asserts it.
 
+A question's `presentation` rides alongside that payload **unfiltered** — it is
+emitted verbatim to the whole room, because `toPublicPayload()` strips the
+payload and nothing else. That is safe only because `presentationSchema`
+(`src/lib/theme.ts`) holds nothing but things every player is meant to see, and
+Zod drops unknown keys, so a field a player must not see has to stay out of that
+schema.
+
 The player page also renders **no game data server-side at all** — everything
 arrives over the socket after joining, so answers can't hide in the initial HTML
 payload either.

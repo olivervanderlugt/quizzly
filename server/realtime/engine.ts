@@ -342,6 +342,10 @@ export class GameRoom {
         shuffleAnswers: this.snapshot.settings.shuffleAnswers,
         seed: question.id,
       }),
+      // Deliberately unfiltered: unlike `payload` above, every field in
+      // `presentationSchema` goes verbatim to every player in the room. So a
+      // field a player must not see does not belong in that schema — there is
+      // no public-presentation filter here to add it to.
       presentation: question.presentation,
       timeLimitSec: question.timeLimitSec,
       points: question.points,

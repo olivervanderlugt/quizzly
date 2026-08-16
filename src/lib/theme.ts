@@ -438,6 +438,16 @@ export const LAYOUTS = {
 
 export type LayoutId = keyof typeof LAYOUTS;
 
+/**
+ * Everything in here is public. The realtime engine emits `presentation`
+ * verbatim next to the answer-stripped payload (`question:show` in
+ * `server/realtime/engine.ts`), so a field a player must not see does not
+ * belong in this schema — there is no filter it would pass through first.
+ *
+ * Add fields optional or with a default, never required: live games re-parse
+ * `Game.quizSnapshot` rows written by older deploys through this schema, and a
+ * failure there surfaces to the player as "Game not found".
+ */
 export const presentationSchema = z.object({
   layout: z
     .enum(Object.keys(LAYOUTS) as [LayoutId, ...LayoutId[]])
