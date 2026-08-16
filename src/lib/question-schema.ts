@@ -444,6 +444,11 @@ function shuffleWithSeed<T>(items: T[], seed: string): T[] {
   return out;
 }
 
+/**
+ * The answer-stripping boundary — but for the payload only. A question's
+ * `presentation` travels alongside this result unfiltered, so nothing a player
+ * must not see may live in `presentationSchema` (`src/lib/theme.ts`).
+ */
 export function toPublicPayload(
   payload: QuestionPayload,
   opts: { shuffleAnswers: boolean; seed: string },
